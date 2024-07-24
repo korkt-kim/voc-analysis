@@ -4,15 +4,15 @@ import Head from 'next/head'
 
 import { BaseLayout } from '@/widgets'
 
-export default function Home(): NextPageWithLayout {
+export default function Search(): NextPageWithLayout {
   return (
     <>
       <Head>
-        <title>Overview</title>
+        <title>Search</title>
       </Head>
-      <main>asdf</main>
+      <main></main>
     </>
   )
 }
 
-Home.getLayout = BaseLayout
+Search.getLayout = BaseLayout
