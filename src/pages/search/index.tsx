@@ -3,6 +3,7 @@ import { NextPageWithLayout } from 'next'
 import Head from 'next/head'
 
 import { BaseLayout } from '@/widgets'
+import { SearchSection } from '@/widgets/search/SearchSection'
 
 export default function Search(): NextPageWithLayout {
   return (
@@ -10,7 +11,9 @@ export default function Search(): NextPageWithLayout {
       <Head>
         <title>Search</title>
       </Head>
-      <main></main>
+      <main>
+        <SearchSection />
+      </main>
     </>
   )
 }

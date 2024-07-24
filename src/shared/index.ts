@@ -1,4 +1,7 @@
 export * from './consts'
+export { axios } from './lib/axios'
+export { initMSW } from './mocks'
+export type { HistoroyOfSearch } from './mocks/handlers/history/search'
 export { useAppLoadingStore } from './store/useAppLoadingStore'
 export { useMetricStore } from './store/useMetricStore'
 export { useSettingStore } from './store/useSettingStore'

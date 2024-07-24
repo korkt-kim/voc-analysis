@@ -5,8 +5,7 @@ import type { AppProps } from 'next/app'
 import { ReactNode } from 'react'
 
 import { QueryProvider } from '@/app'
-
-import { initMSW } from '../mocks'
+import { initMSW } from '@/shared'
 
 initMSW()
 

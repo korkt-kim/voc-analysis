@@ -7,17 +7,17 @@ import { Model } from '../../shared/types'
 
 export const ModelSelect = () => {
   const {
-    search,
-    action: { setSearch },
+    selectedModel,
+    action: { setSelectedModel },
   } = useMetricStore()
 
   const onSearch = (search: Model | 'total') => {
-    setSearch(search)
+    setSelectedModel(search)
   }
 
   return (
     <Select
-      value={search}
+      value={selectedModel}
       showSearch
       options={
         [

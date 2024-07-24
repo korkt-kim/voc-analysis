@@ -6,18 +6,19 @@ import { LOCAL_STORAGE_PREFIX } from '../consts'
 import { Model } from '../types'
 
 export interface MetricStore {
-  search: Model | 'total'
+  selectedModel: Model | 'total'
   action: {
-    setSearch: (value: Model | 'total') => void
+    setSelectedModel: (value: Model | 'total') => void
   }
 }
 
 export const useMetricStore = create<MetricStore>()(
   persist(
     set => ({
-      search: 'total',
+      selectedModel: 'total',
       action: {
-        setSearch: (value: Model | 'total') => set(() => ({ search: value })),
+        setSelectedModel: (value: Model | 'total') =>
+          set(() => ({ selectedModel: value })),
       },
     }),
     {

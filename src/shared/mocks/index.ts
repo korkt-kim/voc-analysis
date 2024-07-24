@@ -12,3 +12,5 @@ async function initMSW() {
 }
 
 export { initMSW }
+
+export type { HistoroyOfSearch } from './handlers/history/search'
