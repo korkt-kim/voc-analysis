@@ -24,7 +24,7 @@ export const handlers = [
         search: '승차감',
         hits: 3,
       },
-    ])
+    ] satisfies HistoroyOfSearch[])
   }),
 
   http.get(
@@ -49,7 +49,7 @@ export const handlers = [
           search: '부동액',
           hits: 3,
         },
-      ])
+      ] satisfies HistoroyOfSearch[])
     }
   ),
 ]

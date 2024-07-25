@@ -63,3 +63,14 @@ export const Models = [
   //   'XCIENT Fuel Cell',
   //   'XCIENT',
 ] as const
+
+export const Labels = [
+  'enhancement',
+  'bug',
+  'praise',
+  'question',
+  'complaints',
+  'others',
+] as const
+
+export const Types = ['critical', 'negative', 'neutral', 'positive'] as const

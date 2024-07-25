@@ -12,24 +12,23 @@ import { findMenuFromMenuClickEvent, getItem } from './lib'
 
 const menuItems: MenuProps['items'] = [
   getItem('Overview', '/', { pathname: '/' }, <HomeOutlined />),
-  getItem('Search', '/search', { pathname: '/search' }, <SearchOutlined />),
-  getItem('Setting', '/setting', { pathname: '/setting' }, <SettingOutlined />),
+  getItem('Insight', '/insight', { pathname: '/insight' }, <SearchOutlined />),
 ]
 
 export const BaseLayout = (page: JSX.Element) => {
   const router = useRouter()
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer, borderRadiusLG, paddingXS },
   } = theme.useToken()
   const selectedKeys = [router.pathname]
 
   return (
-    <Layout>
+    <Layout style={{ minWidth: 1200, minHeight: '100dvh' }}>
       <Layout.Sider width={200} style={{ background: colorBgContainer }}>
         <ModelSelect />
         <Menu
           selectedKeys={selectedKeys}
-          style={{ height: '100%', borderRight: 0 }}
+          style={{ borderRight: 0 }}
           items={menuItems}
           onClick={e => {
             const href = findMenuFromMenuClickEvent(menuItems, e)?.href
@@ -42,7 +41,7 @@ export const BaseLayout = (page: JSX.Element) => {
           }}
         />
       </Layout.Sider>
-      <Layout style={{ padding: '0 24px 24px' }}>
+      <Layout style={{ padding: `0  0 0 ${paddingXS}px` }}>
         <Layout.Content
           style={{
             padding: 24,

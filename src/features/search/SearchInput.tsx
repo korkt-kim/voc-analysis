@@ -26,8 +26,9 @@ export const SearchInput = memo(() => {
     <Input.Search
       value={value}
       onChange={e => setValue(e.target.value)}
-      placeholder='에어컨 고장'
+      placeholder='검색어를 입력해주세요. ex)에어컨 고장'
       onSearch={onSearch}
+      enterButton={false}
     />
   )
 })

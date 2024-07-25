@@ -7,10 +7,8 @@ async function initMSW() {
     const { worker } = await import('./browser')
 
     // Service Worker Mocking 옵션 추가
-    worker.start()
+    await worker.start()
   }
 }
 
 export { initMSW }
-
-export type { HistoroyOfSearch } from './handlers/history/search'

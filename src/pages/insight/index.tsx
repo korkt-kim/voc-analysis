@@ -3,16 +3,21 @@ import { NextPageWithLayout } from 'next'
 import Head from 'next/head'
 
 import { BaseLayout } from '@/widgets'
-import { SearchSection } from '@/widgets/search/SearchSection'
+import { InsightSearchSection } from '@/widgets/search/InsightSearchSection'
+import { BasePageTemplate } from '@/widgets/templates/BasePageTemplate'
+
+const Title = 'Insight'
 
 export default function Search(): NextPageWithLayout {
   return (
     <>
       <Head>
-        <title>Search</title>
+        <title>{Title}</title>
       </Head>
       <main>
-        <SearchSection />
+        <BasePageTemplate title={Title}>
+          <InsightSearchSection />
+        </BasePageTemplate>
       </main>
     </>
   )

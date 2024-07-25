@@ -35,31 +35,44 @@ export const TopRankedSearchInputs = ({ n }: { n: number }) => {
   //   }
 
   return (
-    <Flex gap='large'>
-      <Typography.Text style={{ fontWeight: token.fontWeightStrong }}>
-        인기 검색어
-      </Typography.Text>
-      {isLoading ? (
-        <Row justify='start' align='middle'>
-          {new Array(n).fill(null).map((_, index) => (
-            <Col key={index}>
-              <Skeleton.Input size='small' style={{ width: '30%' }} />
-              {index < n - 1 && <Divider type='vertical' />}
-            </Col>
-          ))}
-        </Row>
-      ) : (
-        <Row justify='start' align='middle'>
-          {data?.data.map((item, index) => (
-            <Col key={index}>
-              <Link href={{ query: { searchText: item.search } }}>
-                {item.search}
-              </Link>
-              {index < n - 1 && <Divider type='vertical' />}
-            </Col>
-          ))}
-        </Row>
-      )}
-    </Flex>
+    <Row gutter={token.margin} align='middle'>
+      <Col span={5}>
+        <Typography.Text
+          ellipsis
+          style={{ fontWeight: token.fontWeightStrong }}>
+          인기검색어
+        </Typography.Text>
+      </Col>
+      <Col span={19}>
+        {isLoading ? (
+          <Row justify='start' align='middle'>
+            {new Array(n).fill(null).map((_, index) => (
+              <Col key={index} span={24 / n}>
+                <Flex align='center'>
+                  <Skeleton.Input
+                    active
+                    size='small'
+                    block
+                    style={{ width: `calc(100%)` }}
+                  />
+                  {index < n - 1 && <Divider type='vertical' />}
+                </Flex>
+              </Col>
+            ))}
+          </Row>
+        ) : (
+          <Row justify='start' align='middle'>
+            {data?.data.map((item, index) => (
+              <Col key={index}>
+                <Link href={{ query: { searchText: item.search } }}>
+                  {item.search}
+                </Link>
+                {index < n - 1 && <Divider type='vertical' />}
+              </Col>
+            ))}
+          </Row>
+        )}
+      </Col>
+    </Row>
   )
 }

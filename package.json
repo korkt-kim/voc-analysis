@@ -17,6 +17,7 @@
     "@tanstack/react-query-devtools": "^5.51.11",
     "antd": "^5.19.3",
     "axios": "^1.7.2",
+    "dayjs": "^1.11.12",
     "echarts": "^5.5.1",
     "echarts-for-react": "^3.0.2",
     "lodash-es": "^4.17.21",
