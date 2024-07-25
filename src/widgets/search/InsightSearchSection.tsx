@@ -1,9 +1,6 @@
 import { Flex } from 'antd'
 
-import { TopRankedSearchInputs } from '@/entities/search/TopRankedSearchInputs'
 import { SearchInput } from '@/features/search/SearchInput'
-
-const TopRankSearchCount = 3
 
 export const InsightSearchSection = () => {
   return (

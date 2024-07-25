@@ -1,5 +1,6 @@
-import { Input, TabsProps } from 'antd'
 import { PropsWithChildren, ReactNode } from 'react'
+
+import { OverviewRouteTab } from '@/features'
 
 import { OverviewFilterSection } from '../search/OverviewFilterSection'
 import { BasePageTemplate } from './BasePageTemplate'
@@ -8,8 +9,6 @@ export interface OverviewTemplateProps {
   title: ReactNode
 }
 
-const items: TabsProps['items'] = []
-
 export function OverviewTemplate({
   title,
   children,
@@ -17,7 +16,7 @@ export function OverviewTemplate({
   return (
     <BasePageTemplate title={title}>
       <OverviewFilterSection />
-
+      <OverviewRouteTab />
       {children}
     </BasePageTemplate>
   )

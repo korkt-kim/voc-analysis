@@ -1,10 +1,7 @@
-import {
-  HomeOutlined,
-  SearchOutlined,
-  SettingOutlined,
-} from '@ant-design/icons'
+import { HomeOutlined, SearchOutlined } from '@ant-design/icons'
 import { Layout, Menu, MenuProps, theme } from 'antd'
 import { useRouter } from 'next/router'
+import { useMemo } from 'react'
 
 import { ModelSelect } from '@/features'
 
@@ -20,7 +17,16 @@ export const BaseLayout = (page: JSX.Element) => {
   const {
     token: { colorBgContainer, borderRadiusLG, paddingXS },
   } = theme.useToken()
-  const selectedKeys = [router.pathname]
+  const selectedKeys = useMemo(() => {
+    if (
+      router.pathname.startsWith('/analysis') ||
+      router.pathname.startsWith('/issues')
+    ) {
+      return ['/']
+    }
+
+    return [router.pathname]
+  }, [router.pathname])
 
   return (
     <Layout style={{ minWidth: 1200, minHeight: '100dvh' }}>
