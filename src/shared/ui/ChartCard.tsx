@@ -1,7 +1,7 @@
 import { Card, CardProps, theme } from 'antd'
 import { memo, useMemo } from 'react'
 
-export const ChartCard3 = memo(function ChartCard3({
+export const ChartCard = memo(function ChartCard({
   styles,
   style,
   ...props

@@ -152,7 +152,15 @@ function handleInputValue(value?: DateRangeFormValue) {
     return { value, range: null }
   }
 
-  const diff = dayjs.duration(value.end.diff(value.start)).toISOString()
+  let diff = dayjs.duration(value.end.diff(value.start)).toISOString()
+  // 윤년 처리. P1Y는 365일이 1년으로 처리되고 add, subtract/add는 366일도 1년으로 처리됨
+  if (
+    dayjs(value.end).isLeapYear() &&
+    dayjs(value.start).add(1, 'year').isSame(value.end)
+  ) {
+    diff = 'P1Y'
+  }
+
   const isPreset = PickerOptions.find(({ value }) => value === diff)
 
   return {
@@ -161,7 +169,7 @@ function handleInputValue(value?: DateRangeFormValue) {
   }
 }
 
-type PresetRange = 'P7D' | 'P30D' | 'P1Y1D' | 'Custom'
+type PresetRange = 'P7D' | 'P30D' | 'P1Y' | 'Custom'
 
 const PickerOptions: {
   label: string
@@ -169,7 +177,7 @@ const PickerOptions: {
 }[] = [
   { label: '1 Week', value: 'P7D' },
   { label: '1 Month', value: 'P30D' },
-  { label: '1 Year', value: 'P1Y1D' },
+  { label: '1 Year', value: 'P1Y' },
 ]
 
 export const getDefaultDateRangeFormValue = (baseDuration?: string) => {

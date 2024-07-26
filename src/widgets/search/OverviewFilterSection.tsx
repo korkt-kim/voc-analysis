@@ -10,7 +10,7 @@ export const OverviewFilterSection = () => {
     <Form>
       <Flex vertical gap='small'>
         <Row justify='center'>
-          <Col span={8}>
+          <Col flex='500px'>
             <Form.Item label='Search'>
               <SearchInput />
               <TopRankedSearchInputs n={3} />

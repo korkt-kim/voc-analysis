@@ -31,7 +31,7 @@ export const useGetInfiniteUsers = (
 }
 
 export const asigneeQueryKeys = {
-  all: ['asignee'] as const,
+  all: ['user'] as const,
   getMany: (model?: Model, query?: QueryParams) =>
     [...asigneeQueryKeys.all, 'getMany', model, query] as const,
 }

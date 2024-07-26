@@ -1,3 +1,4 @@
+import { isNil } from 'lodash-es'
 import { http, HttpResponse } from 'msw'
 
 //enhancement, bug, praise, question, complaints, others
@@ -13,10 +14,10 @@ export const handlers = [
   http.get('http://www.example.com/api/tags', ({ request }) => {
     const url = new URL(request.url)
 
-    const limit = isNaN(Number(url.searchParams.get('limit')))
-      ? 5
+    const limit = isNil(url.searchParams.get('limit'))
+      ? 10
       : Number(url.searchParams.get('limit'))
-    const page = isNaN(Number(url.searchParams.get('page')))
+    const page = isNil(url.searchParams.get('page'))
       ? 1
       : Number(url.searchParams.get('page'))
 
@@ -53,7 +54,7 @@ export const handlers = [
           threshold: 70,
         },
       ] as const
-    ).slice((page - 1) * limit, page * limit - 1)
+    ).slice((page - 1) * limit, page * limit)
 
     return HttpResponse.json(tags)
   }),
@@ -64,10 +65,10 @@ export const handlers = [
       const url = new URL(request.url)
       const { modelId } = params
 
-      const limit = isNaN(Number(url.searchParams.get('limit')))
-        ? 5
+      const limit = isNil(url.searchParams.get('limit'))
+        ? 10
         : Number(url.searchParams.get('limit'))
-      const page = isNaN(Number(url.searchParams.get('page')))
+      const page = isNil(url.searchParams.get('page'))
         ? 1
         : Number(url.searchParams.get('page'))
 
@@ -86,7 +87,7 @@ export const handlers = [
             threshold: 100,
           },
         ] as const
-      ).slice((page - 1) * limit, page * limit - 1)
+      ).slice((page - 1) * limit, page * limit)
 
       return HttpResponse.json(tags)
     }

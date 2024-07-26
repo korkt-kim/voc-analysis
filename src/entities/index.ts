@@ -1,2 +1,7 @@
+export { ChartByCount } from './metric/ChartByCount'
+export { ChartByLabel } from './metric/ChartByLabel'
+export { ChartByTag } from './metric/ChartByTag'
+export { IssueList } from './metric/IssueList'
+export { TotalVocFound } from './metric/TotalVocFound'
 export type { DateRangeFormValue } from './search/DateRange'
 export { DateRange } from './search/DateRange'

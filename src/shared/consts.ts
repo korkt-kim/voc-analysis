@@ -74,3 +74,16 @@ export const Labels = [
 ] as const
 
 export const Types = ['critical', 'negative', 'neutral', 'positive'] as const
+
+export const ChartSelectOptions = [
+  { value: 'bar', label: 'Bar Chart' },
+  { value: 'line', label: 'Line Chart' },
+  { value: 'pie', label: 'Pie Chart' },
+  { value: 'table', label: 'Table' },
+] as const
+
+export const DurationSelectOptions = [
+  { value: 'daily', label: 'Daily' },
+  { value: 'weekly', label: 'Weekly' },
+  { value: 'monthly', label: 'Monthly' },
+] as const

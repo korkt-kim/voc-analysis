@@ -1,596 +1,393 @@
+import { isNil } from 'lodash-es'
 import { http, HttpResponse } from 'msw'
 
-export interface User {
+import { dayjs, Labels, Model } from '@/shared'
+
+export interface VOC {
   id: string
-  email: string
-  username: string
-  type: 'employee' | 'user'
+  title: string
+  detail: string
+  tags: string[]
+  carModel: Model
+  createdAt: string
+  author: string
+  attachments: {
+    type: string
+    uri: string
+  }
+  label: (typeof Labels)[number]
 }
 
+const items: VOC[] = [
+  {
+    id: 'issue-1',
+    title: '차량 출고 문의',
+    detail: '제가 주문한 차량이 언제쯤 출고가 될까요?',
+    tags: ['tag-5'],
+    carModel: 'AVANTE',
+    createdAt: '2024-05-20',
+    author: 'user-58',
+    label: 'question',
+    attachments: {
+      type: 'document',
+      uri: 'http://example.com/attachments/other_question_1.pdf',
+    },
+  },
+  {
+    id: 'issue-2',
+    title: '에어컨이 안 시원해요',
+    detail:
+      '에어컨을 틀어도 시원하지 않아요. 에어컨 필터 청소를 해야할까요? 필터 교체 주기는 얼마나 되나요?',
+    tags: ['tag-4', 'tag-2'],
+    carModel: 'AVANTE',
+    createdAt: '2024-07-13',
+    author: 'user-59',
+    label: 'complaints',
+    attachments: {
+      type: 'image',
+      uri: 'http://example.com/attachments/other_question_2.jpg',
+    },
+  },
+  {
+    id: 'issue-3',
+    title: '차량 구매 절차가 어떻게 되나요?',
+    detail:
+      '차량 구매 시 필요한 서류와 절차에 대해 알고 싶습니다. 너무 복잡한거 아니에요?',
+    tags: ['tag-1', 'tag-3'],
+    carModel: 'GRANDEUR',
+    createdAt: '2024-07-26',
+    author: 'user-60',
+    label: 'complaints',
+    attachments: {
+      type: 'document',
+      uri: 'http://example.com/attachments/purchase_procedure.pdf',
+    },
+  },
+  {
+    id: 'issue-4',
+    title: '차량 옵션 선택 방법',
+    detail: '차량 구매 시 선택할 수 있는 옵션에 대해 알고 싶습니다.',
+    tags: ['tag-1', 'tag-2'],
+    carModel: 'AVANTE',
+    createdAt: '2024-01-12',
+    label: 'question',
+    author: 'user-57',
+    attachments: {
+      type: 'document',
+      uri: 'http://example.com/attachments/options_guide.pdf',
+    },
+  },
+  {
+    id: 'issue-5',
+    title: '신차 할인 프로모션',
+    detail: '현재 진행 중인 신차 할인 프로모션이 있나요?',
+    tags: ['tag-5'],
+    carModel: 'AVANTE',
+    createdAt: '2024-05-18',
+    author: 'user-56',
+    label: 'question',
+    attachments: {
+      type: 'image',
+      uri: 'http://example.com/attachments/promotion.jpg',
+    },
+  },
+  {
+    id: 'issue-6',
+    title: '차가 너무 예뻐요',
+    detail: '현대자동차는 중고차도 어쩜 이리 예뻐요',
+    tags: ['tag-1', 'tag-5'],
+    carModel: 'GRANDEUR',
+    createdAt: '2024-06-14',
+    label: 'praise',
+    author: 'user-55',
+    attachments: {
+      type: 'document',
+      uri: 'http://example.com/attachments/used_car_purchase.pdf',
+    },
+  },
+  {
+    id: 'issue-7',
+    title: '차량 점검 주기',
+    detail: '정기 점검은 얼마나 자주 받아야 하나요?',
+    tags: ['tag-4', 'tag-5'],
+    carModel: 'GRANDEUR',
+    createdAt: '2024-03-10',
+    author: 'user-54',
+    label: 'question',
+    attachments: {
+      type: 'document',
+      uri: 'http://example.com/attachments/maintenance_schedule.pdf',
+    },
+  },
+  {
+    id: 'issue-8',
+    title: '타이어 교체 주기',
+    detail: '타이어는 얼마나 자주 교체해야 하나요?',
+    tags: ['tag-4'],
+    carModel: 'AVANTE',
+    createdAt: '2024-07-05',
+    author: 'user-53',
+    label: 'question',
+    attachments: {
+      type: 'image',
+      uri: 'http://example.com/attachments/tire_replacement.jpg',
+    },
+  },
+  {
+    id: 'issue-9',
+    title: '엔진 오일 교환 시기',
+    detail: '엔진 오일 교환 주기는 어떻게 되나요?',
+    tags: ['tag-4'],
+    carModel: 'AVANTE',
+    createdAt: '2024-07-26',
+    author: 'user-52',
+    label: 'question',
+    attachments: {
+      type: 'video',
+      uri: 'http://example.com/attachments/oil_change.mp4',
+    },
+  },
+  {
+    id: 'issue-10',
+    title: '브레이크 패드 교체 방법',
+    detail: '브레이크 패드는 어떻게 교체하나요?',
+    tags: ['tag-3', 'tag-4'],
+    carModel: 'GRANDEUR',
+    createdAt: '2024-07-22',
+    author: 'user-51',
+    label: 'question',
+    attachments: {
+      type: 'document',
+      uri: 'http://example.com/attachments/brake_pad_replacement.pdf',
+    },
+  },
+  {
+    id: 'issue-11',
+    title: '에어컨 필터 교체 주기',
+    detail: '에어컨 필터는 얼마나 자주 교체해야 하나요?',
+    tags: ['tag-2'],
+    carModel: 'GRANDEUR',
+    createdAt: '2024-07-26',
+    author: 'user-50',
+    label: 'question',
+    attachments: {
+      type: 'image',
+      uri: 'http://example.com/attachments/ac_filter.jpg',
+    },
+  },
+  {
+    id: 'issue-12',
+    title: '현대 디지털 키 설정 방법',
+    detail: '현대 디지털 키는 어떻게 설정하나요?',
+    tags: ['tag-2', 'tag-3'],
+    carModel: 'GRANDEUR',
+    createdAt: '2024-07-15',
+    author: 'user-49',
+    label: 'question',
+    attachments: {
+      type: 'video',
+      uri: 'http://example.com/attachments/digital_key_setup.mp4',
+    },
+  },
+  {
+    id: 'issue-13',
+    title: '디지털 키 사용 중 오류 해결',
+    detail: '현대 디지털 키 사용 중 발생하는 오류를 어떻게 해결하나요?',
+    tags: ['tag-2'],
+    carModel: 'AVANTE',
+    createdAt: '2024-07-22',
+    label: 'bug',
+    author: 'user-48',
+    attachments: {
+      type: 'document',
+      uri: 'http://example.com/attachments/digital_key_error.pdf',
+    },
+  },
+  {
+    id: 'issue-14',
+    title: '디지털 키 초기화 방법',
+    detail: '디지털 키를 초기화하려면 어떻게 해야 하나요?',
+    tags: ['tag-1'],
+    carModel: 'AVANTE',
+    createdAt: '2024-06-14',
+    label: 'question',
+    author: 'user-47',
+    attachments: {
+      type: 'image',
+      uri: 'http://example.com/attachments/digital_key_reset.jpg',
+    },
+  },
+  {
+    id: 'issue-15',
+    title: '디지털 키 배터리 교체',
+    detail: '디지털 키의 배터리는 어떻게 교체하나요?',
+    tags: ['tag-5'],
+    carModel: 'GRANDEUR',
+    createdAt: '2024-03-10',
+    author: 'user-46',
+    label: 'question',
+    attachments: {
+      type: 'video',
+      uri: 'http://example.com/attachments/digital_key_battery.mp4',
+    },
+  },
+  {
+    id: 'issue-16',
+    title: '디지털 키의 보안 제안',
+    detail: '디지털 키의 보안을 강화해야할 것 같습니다.',
+    tags: ['tag-3'],
+    carModel: 'GRANDEUR',
+    createdAt: '2024-07-21',
+    author: 'user-45',
+    label: 'enhancement',
+    attachments: {
+      type: 'document',
+      uri: 'http://example.com/attachments/digital_key_security.pdf',
+    },
+  },
+  {
+    id: 'issue-17',
+    title: '서비스센터 위치 확인 방법',
+    detail: '가장 가까운 서비스센터 위치를 확인하려면 어떻게 하나요?',
+    tags: ['tag-4'],
+    carModel: 'GRANDEUR',
+    createdAt: '2024-07-26',
+    author: 'user-44',
+    label: 'question',
+    attachments: {
+      type: 'document',
+      uri: 'http://example.com/attachments/service_center_location.pdf',
+    },
+  },
+  {
+    id: 'issue-18',
+    title: '서비스 예약 방법',
+    detail: '서비스 예약을 하려면 어떻게 해야 하나요?',
+    tags: ['tag-3'],
+    carModel: 'AVANTE',
+    createdAt: '2024-07-12',
+    author: 'user-43',
+    label: 'question',
+    attachments: {
+      type: 'image',
+      uri: 'http://example.com/attachments/service_booking.jpg',
+    },
+  },
+  {
+    id: 'issue-19',
+    title: '서비스센터 운영 시간',
+    detail: '서비스센터의 운영 시간은 어떻게 되나요?',
+    tags: ['tag-2'],
+    carModel: 'AVANTE',
+    createdAt: '2024-05-18',
+    author: 'user-42',
+    label: 'question',
+    attachments: {
+      type: 'document',
+      uri: 'http://example.com/attachments/service_hours.pdf',
+    },
+  },
+  {
+    id: 'issue-20',
+    title: '비용이 너무 비싸요',
+    detail: '자동차 비용이 너무 비싸요?',
+    tags: ['tag-1'],
+    carModel: 'GRANDEUR',
+    createdAt: '2024-07-14',
+    author: 'user-41',
+    label: 'question',
+    attachments: {
+      type: 'document',
+      uri: 'http://example.com/attachments/service_cost.pdf',
+    },
+  },
+  {
+    id: 'issue-21',
+    title: '긴급 출동 서비스',
+    detail: '긴급 출동 서비스를 요청하려면 어떻게 해야 하나요?',
+    tags: ['tag-1'],
+    carModel: 'GRANDEUR',
+    createdAt: '2024-07-20',
+    author: 'user-40',
+    label: 'question',
+    attachments: {
+      type: 'video',
+      uri: 'http://example.com/attachments/emergency_service.mp4',
+    },
+  },
+  {
+    id: 'issue-22',
+    title: '차량 대여 서비스',
+    detail: '서비스센터 방문 시 차량 대여가 가능한가요?',
+    tags: ['tag-1', 'tag-4'],
+    carModel: 'GRANDEUR',
+    createdAt: '2024-03-10',
+    author: 'user-39',
+    label: 'question',
+    attachments: {
+      type: 'document',
+      uri: 'http://example.com/attachments/car_rental_service.pdf',
+    },
+  },
+]
+
 export const handlers = [
-  http.get('http://www.example.com/api/users', ({ request }) => {
+  http.get('http://www.example.com/api/issues', ({ request }) => {
     const url = new URL(request.url)
 
-    const type = url.searchParams.get('type')
-    const limit = isNaN(Number(url.searchParams.get('limit')))
-      ? 5
+    const limit = isNil(url.searchParams.get('limit'))
+      ? 10
       : Number(url.searchParams.get('limit'))
-    const page = isNaN(Number(url.searchParams.get('page')))
+    const page = isNil(url.searchParams.get('page'))
       ? 1
       : Number(url.searchParams.get('page'))
 
-    const users: User[] = (
-      [
-        {
-          id: 'user-1',
-          email: 'employee1@example.com',
-          username: '김철수',
-          type: 'employee',
-        },
-        {
-          id: 'user-2',
-          email: 'employee2@example.com',
-          username: '이영희',
-          type: 'employee',
-        },
-        {
-          id: 'user-3',
-          email: 'employee3@example.com',
-          username: '박민수',
-          type: 'employee',
-        },
-        {
-          id: 'user-4',
-          email: 'employee4@example.com',
-          username: '최지훈',
-          type: 'employee',
-        },
-        {
-          id: 'user-5',
-          email: 'employee5@example.com',
-          username: '강은주',
-          type: 'employee',
-        },
-        {
-          id: 'user-6',
-          email: 'employee6@example.com',
-          username: '윤지수',
-          type: 'employee',
-        },
-        {
-          id: 'user-7',
-          email: 'employee7@example.com',
-          username: '정해준',
-          type: 'employee',
-        },
-        {
-          id: 'user-8',
-          email: 'employee8@example.com',
-          username: '임선영',
-          type: 'employee',
-        },
-        {
-          id: 'user-9',
-          email: 'employee9@example.com',
-          username: '오성민',
-          type: 'employee',
-        },
-        {
-          id: 'user-10',
-          email: 'employee10@example.com',
-          username: '신예진',
-          type: 'employee',
-        },
-        {
-          id: 'user-11',
-          email: 'user1@example.com',
-          username: '김영수',
-          type: 'user',
-        },
-        {
-          id: 'user-12',
-          email: 'user2@example.com',
-          username: '이민주',
-          type: 'user',
-        },
-        {
-          id: 'user-13',
-          email: 'user3@example.com',
-          username: '박지혜',
-          type: 'user',
-        },
-        {
-          id: 'user-14',
-          email: 'user4@example.com',
-          username: '최강민',
-          type: 'user',
-        },
-        {
-          id: 'user-15',
-          email: 'user5@example.com',
-          username: '강민준',
-          type: 'user',
-        },
-        {
-          id: 'user-16',
-          email: 'user6@example.com',
-          username: '윤예린',
-          type: 'user',
-        },
-        {
-          id: 'user-17',
-          email: 'user7@example.com',
-          username: '정현우',
-          type: 'user',
-        },
-        {
-          id: 'user-18',
-          email: 'user8@example.com',
-          username: '임다연',
-          type: 'user',
-        },
-        {
-          id: 'user-19',
-          email: 'user9@example.com',
-          username: '오하늘',
-          type: 'user',
-        },
-        {
-          id: 'user-20',
-          email: 'user10@example.com',
-          username: '신동민',
-          type: 'user',
-        },
-        {
-          id: 'user-21',
-          email: 'user11@example.com',
-          username: '김수민',
-          type: 'user',
-        },
-        {
-          id: 'user-22',
-          email: 'user12@example.com',
-          username: '이서준',
-          type: 'user',
-        },
-        {
-          id: 'user-23',
-          email: 'user13@example.com',
-          username: '박은서',
-          type: 'user',
-        },
-        {
-          id: 'user-24',
-          email: 'user14@example.com',
-          username: '최도현',
-          type: 'user',
-        },
-        {
-          id: 'user-25',
-          email: 'user15@example.com',
-          username: '강시우',
-          type: 'user',
-        },
-        {
-          id: 'user-26',
-          email: 'user16@example.com',
-          username: '윤지안',
-          type: 'user',
-        },
-        {
-          id: 'user-27',
-          email: 'user17@example.com',
-          username: '정서윤',
-          type: 'user',
-        },
-        {
-          id: 'user-28',
-          email: 'user18@example.com',
-          username: '임준서',
-          type: 'user',
-        },
-        {
-          id: 'user-29',
-          email: 'user19@example.com',
-          username: '오예원',
-          type: 'user',
-        },
-        {
-          id: 'user-30',
-          email: 'user20@example.com',
-          username: '신채연',
-          type: 'user',
-        },
-        {
-          id: 'user-31',
-          email: 'employee1@company.com',
-          username: '김하늘',
-          type: 'employee',
-        },
-        {
-          id: 'user-32',
-          email: 'employee2@company.com',
-          username: '이도연',
-          type: 'employee',
-        },
-        {
-          id: 'user-33',
-          email: 'employee3@company.com',
-          username: '박서윤',
-          type: 'employee',
-        },
-        {
-          id: 'user-34',
-          email: 'employee4@company.com',
-          username: '최민준',
-          type: 'employee',
-        },
-        {
-          id: 'user-35',
-          email: 'employee5@company.com',
-          username: '강서현',
-          type: 'employee',
-        },
-        {
-          id: 'user-36',
-          email: 'employee6@company.com',
-          username: '윤지민',
-          type: 'employee',
-        },
-        {
-          id: 'user-37',
-          email: 'employee7@company.com',
-          username: '정도현',
-          type: 'employee',
-        },
-        {
-          id: 'user-38',
-          email: 'employee8@company.com',
-          username: '임하윤',
-          type: 'employee',
-        },
-        {
-          id: 'user-39',
-          email: 'employee9@company.com',
-          username: '오지우',
-          type: 'employee',
-        },
-        {
-          id: 'user-40',
-          email: 'employee10@company.com',
-          username: '신서준',
-          type: 'employee',
-        },
-        {
-          id: 'user-41',
-          email: 'user1@service.com',
-          username: '김다은',
-          type: 'user',
-        },
-        {
-          id: 'user-42',
-          email: 'user2@service.com',
-          username: '이주원',
-          type: 'user',
-        },
-        {
-          id: 'user-43',
-          email: 'user3@service.com',
-          username: '박채원',
-          type: 'user',
-        },
-        {
-          id: 'user-44',
-          email: 'user4@service.com',
-          username: '최하민',
-          type: 'user',
-        },
-        {
-          id: 'user-45',
-          email: 'user5@service.com',
-          username: '강민서',
-          type: 'user',
-        },
-        {
-          id: 'user-46',
-          email: 'user6@service.com',
-          username: '윤도윤',
-          type: 'user',
-        },
-        {
-          id: 'user-47',
-          email: 'user7@service.com',
-          username: '정지우',
-          type: 'user',
-        },
-        {
-          id: 'user-48',
-          email: 'user8@service.com',
-          username: '임예준',
-          type: 'user',
-        },
-        {
-          id: 'user-49',
-          email: 'user9@service.com',
-          username: '오수아',
-          type: 'user',
-        },
-        {
-          id: 'user-50',
-          email: 'user10@service.com',
-          username: '신민호',
-          type: 'user',
-        },
-        {
-          id: 'user-51',
-          email: 'user11@service.com',
-          username: '김지호',
-          type: 'user',
-        },
-        {
-          id: 'user-52',
-          email: 'user12@service.com',
-          username: '이윤서',
-          type: 'user',
-        },
-        {
-          id: 'user-53',
-          email: 'user13@service.com',
-          username: '박다인',
-          type: 'user',
-        },
-        {
-          id: 'user-54',
-          email: 'user14@service.com',
-          username: '최건우',
-          type: 'user',
-        },
-        {
-          id: 'user-55',
-          email: 'user15@service.com',
-          username: '강예린',
-          type: 'user',
-        },
-        {
-          id: 'user-56',
-          email: 'user16@service.com',
-          username: '윤하은',
-          type: 'user',
-        },
-        {
-          id: 'user-57',
-          email: 'user17@service.com',
-          username: '정서준',
-          type: 'user',
-        },
-        {
-          id: 'user-58',
-          email: 'user18@service.com',
-          username: '임주아',
-          type: 'user',
-        },
-        {
-          id: 'user-59',
-          email: 'user19@service.com',
-          username: '오민서',
-          type: 'user',
-        },
-        {
-          id: 'user-60',
-          email: 'user20@service.com',
-          username: '신주원',
-          type: 'user',
-        },
-      ] as const
-    )
-      .filter(user => (type ? user.type === type : true))
-      .slice((page - 1) * limit, page * limit - 1)
+    const startDate = url.searchParams.get('startDate')
+    const endDate = url.searchParams.get('endDate')
 
-    return HttpResponse.json(users)
+    const filteredVocs = items
+      .filter(item =>
+        startDate ? dayjs(item.createdAt) >= dayjs(startDate) : true
+      )
+      .filter(item =>
+        endDate ? dayjs(item.createdAt) <= dayjs(endDate) : true
+      )
+
+    return HttpResponse.json({
+      items: filteredVocs.slice((page - 1) * limit, page * limit),
+      total: filteredVocs.length,
+    })
   }),
 
   http.get(
-    'http://www.example.com/api/:modelId/users',
+    'http://www.example.com/api/:modelId/issues',
     ({ request, params }) => {
       const url = new URL(request.url)
       const { modelId } = params
 
-      const type = url.searchParams.get('type')
-      const limit = isNaN(Number(url.searchParams.get('limit')))
-        ? 5
+      const limit = isNil(url.searchParams.get('limit'))
+        ? 10
         : Number(url.searchParams.get('limit'))
-      const page = isNaN(Number(url.searchParams.get('page')))
+      const page = isNil(url.searchParams.get('page'))
         ? 1
         : Number(url.searchParams.get('page'))
 
-      const users: User[] = (
-        [
-          {
-            id: 'user-31',
-            email: 'employee1@company.com',
-            username: '김하늘',
-            type: 'employee',
-          },
-          {
-            id: 'user-32',
-            email: 'employee2@company.com',
-            username: '이도연',
-            type: 'employee',
-          },
-          {
-            id: 'user-33',
-            email: 'employee3@company.com',
-            username: '박서윤',
-            type: 'employee',
-          },
-          {
-            id: 'user-34',
-            email: 'employee4@company.com',
-            username: '최민준',
-            type: 'employee',
-          },
-          {
-            id: 'user-35',
-            email: 'employee5@company.com',
-            username: '강서현',
-            type: 'employee',
-          },
-          {
-            id: 'user-36',
-            email: 'employee6@company.com',
-            username: '윤지민',
-            type: 'employee',
-          },
-          {
-            id: 'user-37',
-            email: 'employee7@company.com',
-            username: '정도현',
-            type: 'employee',
-          },
-          {
-            id: 'user-38',
-            email: 'employee8@company.com',
-            username: '임하윤',
-            type: 'employee',
-          },
-          {
-            id: 'user-39',
-            email: 'employee9@company.com',
-            username: '오지우',
-            type: 'employee',
-          },
-          {
-            id: 'user-40',
-            email: 'employee10@company.com',
-            username: '신서준',
-            type: 'employee',
-          },
-          {
-            id: 'user-41',
-            email: 'user1@service.com',
-            username: '김다은',
-            type: 'user',
-          },
-          {
-            id: 'user-42',
-            email: 'user2@service.com',
-            username: '이주원',
-            type: 'user',
-          },
-          {
-            id: 'user-43',
-            email: 'user3@service.com',
-            username: '박채원',
-            type: 'user',
-          },
-          {
-            id: 'user-44',
-            email: 'user4@service.com',
-            username: '최하민',
-            type: 'user',
-          },
-          {
-            id: 'user-45',
-            email: 'user5@service.com',
-            username: '강민서',
-            type: 'user',
-          },
-          {
-            id: 'user-46',
-            email: 'user6@service.com',
-            username: '윤도윤',
-            type: 'user',
-          },
-          {
-            id: 'user-47',
-            email: 'user7@service.com',
-            username: '정지우',
-            type: 'user',
-          },
-          {
-            id: 'user-48',
-            email: 'user8@service.com',
-            username: '임예준',
-            type: 'user',
-          },
-          {
-            id: 'user-49',
-            email: 'user9@service.com',
-            username: '오수아',
-            type: 'user',
-          },
-          {
-            id: 'user-50',
-            email: 'user10@service.com',
-            username: '신민호',
-            type: 'user',
-          },
-          {
-            id: 'user-51',
-            email: 'user11@service.com',
-            username: '김지호',
-            type: 'user',
-          },
-          {
-            id: 'user-52',
-            email: 'user12@service.com',
-            username: '이윤서',
-            type: 'user',
-          },
-          {
-            id: 'user-53',
-            email: 'user13@service.com',
-            username: '박다인',
-            type: 'user',
-          },
-          {
-            id: 'user-54',
-            email: 'user14@service.com',
-            username: '최건우',
-            type: 'user',
-          },
-          {
-            id: 'user-55',
-            email: 'user15@service.com',
-            username: '강예린',
-            type: 'user',
-          },
-          {
-            id: 'user-56',
-            email: 'user16@service.com',
-            username: '윤하은',
-            type: 'user',
-          },
-          {
-            id: 'user-57',
-            email: 'user17@service.com',
-            username: '정서준',
-            type: 'user',
-          },
-          {
-            id: 'user-58',
-            email: 'user18@service.com',
-            username: '임주아',
-            type: 'user',
-          },
-          {
-            id: 'user-59',
-            email: 'user19@service.com',
-            username: '오민서',
-            type: 'user',
-          },
-          {
-            id: 'user-60',
-            email: 'user20@service.com',
-            username: '신주원',
-            type: 'user',
-          },
-        ] as const
-      )
-        .filter(user => (type ? user.type === type : true))
-        .slice((page - 1) * limit, page * limit - 1)
+      const startDate = url.searchParams.get('startDate')
+      const endDate = url.searchParams.get('endDate')
 
-      return HttpResponse.json(users)
+      const filteredVocs = items
+        .filter(item => item.carModel === modelId)
+        .filter(item =>
+          startDate ? dayjs(item.createdAt) >= dayjs(startDate) : true
+        )
+        .filter(item =>
+          endDate ? dayjs(item.createdAt) <= dayjs(endDate) : true
+        )
+
+      return HttpResponse.json({
+        items: filteredVocs.slice((page - 1) * limit, page * limit),
+        total: filteredVocs.length,
+      })
     }
   ),
 ]
