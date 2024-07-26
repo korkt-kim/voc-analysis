@@ -70,10 +70,25 @@ export const useGetAllVocs = (
   })
 }
 
+export const useGetVoc = (id: string, config?: AxiosRequestConfig) => {
+  return useQuery({
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey: vocQueryKeys.getOne(id),
+    queryFn: () =>
+      axios.request<VOC>({
+        url: `/issue/${id}`,
+        method: 'get',
+
+        ...config,
+      }),
+  })
+}
+
 export const vocQueryKeys = {
   all: ['voc'] as const,
   getCount: (model?: Model, query?: QueryParams) =>
     [...vocQueryKeys.all, 'getCount', model, query] as const,
   getMany: (model?: Model, query?: QueryParams) =>
     [...vocQueryKeys.all, 'getMany', model, query] as const,
+  getOne: (id: string) => [...vocQueryKeys.all, 'getOne', id] as const,
 }

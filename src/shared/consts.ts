@@ -73,7 +73,19 @@ export const Labels = [
   'others',
 ] as const
 
-export const Types = ['critical', 'negative', 'neutral', 'positive'] as const
+export const Sentiments = [
+  'critical',
+  'negative',
+  'neutral',
+  'positive',
+] as const
+
+export const Progress = [
+  'registered',
+  'assigned',
+  'in progress',
+  'resolved',
+] as const
 
 export const ChartSelectOptions = [
   { value: 'bar', label: 'Bar Chart' },

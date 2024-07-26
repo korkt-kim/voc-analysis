@@ -1,4 +1,5 @@
-import { Table, TableProps } from 'antd'
+import { Button, Table, TableProps } from 'antd'
+import Link from 'next/link'
 import { useMemo } from 'react'
 
 import { useMetricStore, useOverviewStore } from '@/shared'
@@ -19,7 +20,21 @@ export const IssueList = () => {
       pagination: { position: ['bottomCenter'], pageSize: 10 },
       rowKey: item => item.id,
       columns: [
-        { title: 'Title', dataIndex: 'title' },
+        {
+          title: 'Title',
+          dataIndex: 'title',
+          render: (title, record) => {
+            return (
+              <Link
+                href={{
+                  pathname: '/issues/[issueId]',
+                  query: { issueId: record.id, from: '/issues' },
+                }}>
+                {title}
+              </Link>
+            )
+          },
+        },
         {
           title: 'Tag',
           dataIndex: 'tags',
@@ -27,8 +42,11 @@ export const IssueList = () => {
             return item.join(', ')
           },
         },
+        { title: 'Status', dataIndex: 'status' },
         { title: 'Model', dataIndex: 'carModel' },
         { title: 'Label', dataIndex: 'label' },
+        { title: 'Sentiment', dataIndex: 'sentiment' },
+        { title: 'Asignee', dataIndex: 'assignee' },
         { title: 'Created At', dataIndex: 'createdAt' },
         { title: 'Created By', dataIndex: 'author' },
       ],

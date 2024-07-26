@@ -11,12 +11,12 @@ export const handlers = [
     return HttpResponse.json([
       {
         id: 'c7b3d8e0-5e0b-4b0f-8b3a-3b9f4b3d3b3',
-        search: '엔진오일',
+        search: '엔진오일 교체주기',
         hits: 5,
       },
       {
         id: 'c7b3d8e0-5e0b-4b0f-8b3a-3b9f4b3d3b4',
-        search: '와이퍼',
+        search: '와이퍼 교체주기',
         hits: 4,
       },
       {

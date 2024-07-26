@@ -2,7 +2,7 @@ import { css } from '@emotion/css'
 import { Cascader, theme } from 'antd'
 import { useMemo } from 'react'
 
-import { Labels, Types, useMetricStore, useOverviewStore } from '@/shared'
+import { Labels, Sentiments, useMetricStore, useOverviewStore } from '@/shared'
 
 import { useGetInfiniteTags } from './api/tag-query'
 import { useGetInfiniteUsers } from './api/user-query'
@@ -25,17 +25,17 @@ export const OverviewFilter = () => {
 
   const model = selectedModel === 'total' ? undefined : selectedModel
   // get Authors, get Tags, Asignees, types
-  const authors = useGetInfiniteUsers(model, { type: 'employee' })
-  const users = useGetInfiniteUsers(model, { type: 'user' })
+  const asignees = useGetInfiniteUsers(model, { type: 'employee' })
+  const authors = useGetInfiniteUsers(model, { type: 'user' })
   const tags = useGetInfiniteTags(model)
 
   const options: Option[] = useMemo(() => {
     return [
       {
-        label: 'Authors',
-        value: 'authors',
+        label: 'Asignees',
+        value: 'asignees',
 
-        children: authors.data?.pages.flatMap(page => {
+        children: asignees.data?.pages.flatMap(page => {
           return page.data.flatMap(data => ({
             value: data.id,
             label: data.username,
@@ -44,9 +44,9 @@ export const OverviewFilter = () => {
         }),
       },
       {
-        label: 'Users',
-        value: 'users',
-        children: users.data?.pages.flatMap(page => {
+        label: 'Authors',
+        value: 'authors',
+        children: authors.data?.pages.flatMap(page => {
           return page.data.flatMap(data => ({
             value: data.id,
             label: data.username,
@@ -75,16 +75,16 @@ export const OverviewFilter = () => {
         })),
       },
       {
-        label: 'Types',
-        value: 'types',
-        children: Types.map(label => ({
+        label: 'Sentiments',
+        value: 'sentiments',
+        children: Sentiments.map(label => ({
           value: label,
           label,
           isLeaf: true,
         })),
       },
     ]
-  }, [authors.data?.pages, tags.data?.pages, users.data?.pages])
+  }, [asignees.data?.pages, authors.data?.pages, tags.data?.pages])
 
   const onChange = (_value: (string | number)[][]) => {
     setFilter(

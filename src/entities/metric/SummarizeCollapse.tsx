@@ -4,9 +4,10 @@ import { uniqueId } from 'lodash-es'
 export const SummarizeCollapse = () => {
   return (
     <Collapse
+      defaultActiveKey='1'
       items={[
         {
-          key: uniqueId(),
+          key: '1',
           label: 'Summarize',
           children: (
             <Typography.Paragraph>

@@ -1,7 +1,7 @@
 import { isNil } from 'lodash-es'
 import { http, HttpResponse } from 'msw'
 
-import { dayjs, Labels, Model } from '@/shared'
+import { dayjs, Labels, Model, Sentiments, Status } from '@/shared'
 
 export interface VOC {
   id: string
@@ -15,6 +15,9 @@ export interface VOC {
     type: string
     uri: string
   }
+  status: (typeof Status)[number]
+  assignee: string
+  sentiment: (typeof Sentiments)[number]
   label: (typeof Labels)[number]
 }
 
@@ -28,6 +31,9 @@ const items: VOC[] = [
     createdAt: '2024-05-20',
     author: 'user-58',
     label: 'question',
+    sentiment: 'neutral',
+    assignee: 'user-1',
+    status: 'assigned',
     attachments: {
       type: 'document',
       uri: 'http://example.com/attachments/other_question_1.pdf',
@@ -43,6 +49,9 @@ const items: VOC[] = [
     createdAt: '2024-07-13',
     author: 'user-59',
     label: 'complaints',
+    sentiment: 'critical',
+    assignee: 'user-2',
+    status: 'in progress',
     attachments: {
       type: 'image',
       uri: 'http://example.com/attachments/other_question_2.jpg',
@@ -58,6 +67,9 @@ const items: VOC[] = [
     createdAt: '2024-07-26',
     author: 'user-60',
     label: 'complaints',
+    sentiment: 'negative',
+    assignee: 'user-3',
+    status: 'in progress',
     attachments: {
       type: 'document',
       uri: 'http://example.com/attachments/purchase_procedure.pdf',
@@ -72,6 +84,9 @@ const items: VOC[] = [
     createdAt: '2024-01-12',
     label: 'question',
     author: 'user-57',
+    sentiment: 'neutral',
+    assignee: 'user-4',
+    status: 'in progress',
     attachments: {
       type: 'document',
       uri: 'http://example.com/attachments/options_guide.pdf',
@@ -86,6 +101,9 @@ const items: VOC[] = [
     createdAt: '2024-05-18',
     author: 'user-56',
     label: 'question',
+    sentiment: 'neutral',
+    assignee: 'user-5',
+    status: 'resolved',
     attachments: {
       type: 'image',
       uri: 'http://example.com/attachments/promotion.jpg',
@@ -100,6 +118,9 @@ const items: VOC[] = [
     createdAt: '2024-06-14',
     label: 'praise',
     author: 'user-55',
+    sentiment: 'positive',
+    assignee: 'user-6',
+    status: 'assigned',
     attachments: {
       type: 'document',
       uri: 'http://example.com/attachments/used_car_purchase.pdf',
@@ -114,6 +135,9 @@ const items: VOC[] = [
     createdAt: '2024-03-10',
     author: 'user-54',
     label: 'question',
+    sentiment: 'neutral',
+    assignee: 'user-7',
+    status: 'in progress',
     attachments: {
       type: 'document',
       uri: 'http://example.com/attachments/maintenance_schedule.pdf',
@@ -128,6 +152,9 @@ const items: VOC[] = [
     createdAt: '2024-07-05',
     author: 'user-53',
     label: 'question',
+    sentiment: 'neutral',
+    assignee: 'user-8',
+    status: 'in progress',
     attachments: {
       type: 'image',
       uri: 'http://example.com/attachments/tire_replacement.jpg',
@@ -142,6 +169,9 @@ const items: VOC[] = [
     createdAt: '2024-07-26',
     author: 'user-52',
     label: 'question',
+    sentiment: 'neutral',
+    assignee: 'user-9',
+    status: 'in progress',
     attachments: {
       type: 'video',
       uri: 'http://example.com/attachments/oil_change.mp4',
@@ -156,6 +186,9 @@ const items: VOC[] = [
     createdAt: '2024-07-22',
     author: 'user-51',
     label: 'question',
+    sentiment: 'neutral',
+    assignee: 'user-10',
+    status: 'in progress',
     attachments: {
       type: 'document',
       uri: 'http://example.com/attachments/brake_pad_replacement.pdf',
@@ -170,6 +203,9 @@ const items: VOC[] = [
     createdAt: '2024-07-26',
     author: 'user-50',
     label: 'question',
+    sentiment: 'neutral',
+    assignee: 'user-1',
+    status: 'in progress',
     attachments: {
       type: 'image',
       uri: 'http://example.com/attachments/ac_filter.jpg',
@@ -184,6 +220,9 @@ const items: VOC[] = [
     createdAt: '2024-07-15',
     author: 'user-49',
     label: 'question',
+    sentiment: 'neutral',
+    assignee: 'user-1',
+    status: 'resolved',
     attachments: {
       type: 'video',
       uri: 'http://example.com/attachments/digital_key_setup.mp4',
@@ -198,6 +237,9 @@ const items: VOC[] = [
     createdAt: '2024-07-22',
     label: 'bug',
     author: 'user-48',
+    sentiment: 'critical',
+    assignee: 'user-2',
+    status: 'in progress',
     attachments: {
       type: 'document',
       uri: 'http://example.com/attachments/digital_key_error.pdf',
@@ -212,6 +254,9 @@ const items: VOC[] = [
     createdAt: '2024-06-14',
     label: 'question',
     author: 'user-47',
+    sentiment: 'neutral',
+    assignee: 'user-1',
+    status: 'in progress',
     attachments: {
       type: 'image',
       uri: 'http://example.com/attachments/digital_key_reset.jpg',
@@ -226,6 +271,9 @@ const items: VOC[] = [
     createdAt: '2024-03-10',
     author: 'user-46',
     label: 'question',
+    sentiment: 'neutral',
+    status: 'in progress',
+    assignee: 'user-1',
     attachments: {
       type: 'video',
       uri: 'http://example.com/attachments/digital_key_battery.mp4',
@@ -240,6 +288,9 @@ const items: VOC[] = [
     createdAt: '2024-07-21',
     author: 'user-45',
     label: 'enhancement',
+    sentiment: 'neutral',
+    status: 'in progress',
+    assignee: 'user-2',
     attachments: {
       type: 'document',
       uri: 'http://example.com/attachments/digital_key_security.pdf',
@@ -254,6 +305,9 @@ const items: VOC[] = [
     createdAt: '2024-07-26',
     author: 'user-44',
     label: 'question',
+    sentiment: 'neutral',
+    status: 'in progress',
+    assignee: 'user-1',
     attachments: {
       type: 'document',
       uri: 'http://example.com/attachments/service_center_location.pdf',
@@ -268,6 +322,9 @@ const items: VOC[] = [
     createdAt: '2024-07-12',
     author: 'user-43',
     label: 'question',
+    sentiment: 'neutral',
+    status: 'in progress',
+    assignee: 'user-1',
     attachments: {
       type: 'image',
       uri: 'http://example.com/attachments/service_booking.jpg',
@@ -282,6 +339,9 @@ const items: VOC[] = [
     createdAt: '2024-05-18',
     author: 'user-42',
     label: 'question',
+    sentiment: 'neutral',
+    assignee: 'user-1',
+    status: 'in progress',
     attachments: {
       type: 'document',
       uri: 'http://example.com/attachments/service_hours.pdf',
@@ -295,7 +355,10 @@ const items: VOC[] = [
     carModel: 'GRANDEUR',
     createdAt: '2024-07-14',
     author: 'user-41',
-    label: 'question',
+    label: 'complaints',
+    sentiment: 'negative',
+    assignee: 'user-2',
+    status: 'in progress',
     attachments: {
       type: 'document',
       uri: 'http://example.com/attachments/service_cost.pdf',
@@ -310,6 +373,9 @@ const items: VOC[] = [
     createdAt: '2024-07-20',
     author: 'user-40',
     label: 'question',
+    sentiment: 'neutral',
+    assignee: 'user-2',
+    status: 'assigned',
     attachments: {
       type: 'video',
       uri: 'http://example.com/attachments/emergency_service.mp4',
@@ -324,6 +390,9 @@ const items: VOC[] = [
     createdAt: '2024-03-10',
     author: 'user-39',
     label: 'question',
+    sentiment: 'neutral',
+    assignee: 'user-1',
+    status: 'resolved',
     attachments: {
       type: 'document',
       uri: 'http://example.com/attachments/car_rental_service.pdf',
@@ -390,4 +459,12 @@ export const handlers = [
       })
     }
   ),
+
+  http.get('http://www.example.com/api/issue/:issueId', ({ params }) => {
+    const { issueId } = params
+
+    const filteredVoc = items.find(item => item.id === issueId)
+
+    return HttpResponse.json(filteredVoc)
+  }),
 ]
