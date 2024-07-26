@@ -1,8 +1,11 @@
-import { Col, Flex, Row, Select, Table } from 'antd'
+import { Flex, Select, Table } from 'antd'
 import ReactECharts from 'echarts-for-react'
 import { omit } from 'lodash-es'
-import React, { useMemo, useState } from 'react'
+import { useRouter } from 'next/router'
+import { useMemo, useState } from 'react'
 
+import { useGetAllTags } from '@/features/search/api/tag-query'
+import { useGetAllUsers } from '@/features/search/api/user-query'
 import {
   ChartCard,
   ChartSelectOptions as _ChartSelectOptions,
@@ -13,7 +16,6 @@ import {
   useMetricStore,
   useOverviewStore,
 } from '@/shared'
-import { ChartValueFilter } from '@/shared/ui/ChartValueFilter'
 
 import { useGetAllVocs } from './api/voc-query'
 
@@ -23,7 +25,10 @@ const ChartSelectOptions = _ChartSelectOptions.filter(
 
 export const ChartByTag = () => {
   const { selectedModel } = useMetricStore()
-  const { dateRange } = useOverviewStore()
+  const { dateRange, filter } = useOverviewStore()
+  const {
+    query: { searchText },
+  } = useRouter()
   const [timeUnit, setTimeUnit] = useState<'daily' | 'weekly' | 'monthly'>(
     'daily'
   )
@@ -32,8 +37,18 @@ export const ChartByTag = () => {
 
   const { data: rawData } = useGetAllVocs(
     selectedModel === 'total' ? undefined : selectedModel,
-    { startDate: dateRange.start, endDate: dateRange.end }
+    {
+      startDate: dateRange.start,
+      endDate: dateRange.end,
+      tags: filter.find(item => item[0] === 'tags')?.[1],
+      assignee: filter.find(item => item[0] === 'asignees')?.[1],
+      author: filter.find(item => item[0] === 'authors')?.[1],
+      sentiment: filter.find(item => item[0] === '"sentiments"')?.[1],
+      search: searchText,
+    }
   )
+
+  const { data: tags } = useGetAllTags()
 
   const data = useMemo(() => {
     if (!rawData) {
@@ -71,14 +86,17 @@ export const ChartByTag = () => {
   const chartValueFilterOption = useChartValueFilterOption({
     data,
   })
-
+  //
   const getChartOptions = useGetChartOption(
     chartType,
     data.map(item => ({
       category: item.category,
-      value: item.value.filter(v =>
-        chartValueFilterOption.checkedKeys?.includes(v.name)
-      ),
+      value: item.value
+        .filter(v => chartValueFilterOption.checkedKeys?.includes(v.name))
+        .map(v => ({
+          name: tags?.items.find(tag => tag.id === v.name)?.tagName ?? '',
+          value: v.value,
+        })),
     }))
   )
 

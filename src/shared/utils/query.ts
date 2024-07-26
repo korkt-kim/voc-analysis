@@ -1,5 +1,5 @@
 import { AxiosInstance, AxiosResponse } from 'axios'
-import { assign, isFunction, isNil, pickBy, range, set } from 'lodash-es'
+import { assign, get, isFunction, isNil, pickBy, range, set } from 'lodash-es'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function getAllContent<
@@ -59,26 +59,26 @@ export async function getAllContent<
   const result = {
     items: [],
   } as any as AxiosResponse<TResponse>['data']
-
+  console.log(list)
   for (const { data } of list) {
+    console.log('Data', data)
     assign(result, pickBy(data, isFunction))
 
     result.items.push(...data.items)
-
-    for (const resourceName in data.include) {
-      const list = data.include[resourceName]
-
-      for (const resource of list) {
-        const id = resource.sys.id
-
-        if (!id) {
-          continue
-        }
-
-        set(result, ['include', resourceName, id], resource)
-      }
-    }
   }
-
+  console.log('result')
+  console.log(result)
   return result
+}
+
+export const getName = <T extends { id: string }>(
+  source: T[],
+  id: string,
+  nameAttribute = 'name'
+) => {
+  return get(
+    source.find(item => item.id === id),
+    nameAttribute,
+    ''
+  )
 }

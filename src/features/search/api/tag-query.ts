@@ -1,7 +1,7 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { AxiosRequestConfig } from 'axios'
 
-import { axios, Model, QueryParams, User } from '@/shared'
+import { axios, getAllContent, Model, QueryParams } from '@/shared'
 import { Tag } from '@/shared/mocks/handlers/tag'
 
 export const useGetInfiniteTags = (
@@ -31,8 +31,32 @@ export const useGetInfiniteTags = (
   })
 }
 
+export const useGetAllTags = (
+  model?: Model,
+  query?: QueryParams,
+  config?: AxiosRequestConfig
+) => {
+  return useQuery({
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey: tagQueryKeys.getAll(model, query),
+    queryFn: () =>
+      getAllContent({
+        http: axios,
+        maxTries: 1,
+        queryResult: axios.request<{ items: Tag[] }>({
+          url: model ? `/${model}/tags` : '/tags',
+          method: 'get',
+          params: { ...query, limit: 100 },
+          ...config,
+        }),
+      }),
+  })
+}
+
 export const tagQueryKeys = {
   all: ['tag'] as const,
   getMany: (model?: Model, query?: QueryParams) =>
     [...tagQueryKeys.all, 'getMany', model, query] as const,
+  getAll: (model?: Model, query?: QueryParams) =>
+    [...tagQueryKeys.all, 'getAll', model, query] as const,
 }

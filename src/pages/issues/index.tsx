@@ -1,6 +1,5 @@
-import { CloseOutlined, RiseOutlined } from '@ant-design/icons'
-import { Button, Collapse, Flex, Typography } from 'antd'
-import { uniqueId } from 'lodash-es'
+import { RiseOutlined } from '@ant-design/icons'
+import { Button, Flex } from 'antd'
 import { NextPageWithLayout } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'

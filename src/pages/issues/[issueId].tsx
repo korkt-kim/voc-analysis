@@ -4,7 +4,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Route } from 'nextjs-routes'
-import { useEffect } from 'react'
 
 import { VocDetail } from '@/entities'
 import { BaseLayout } from '@/widgets'

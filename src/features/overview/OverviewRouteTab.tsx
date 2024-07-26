@@ -29,7 +29,7 @@ export const OverviewRouteTab = () => {
       return
     }
 
-    router.push(route)
+    router.push({ ...router, ...route })
   }
 
   return (

@@ -4,8 +4,8 @@ import { useMemo } from 'react'
 
 import { Labels, Sentiments, useMetricStore, useOverviewStore } from '@/shared'
 
-import { useGetInfiniteTags } from './api/tag-query'
-import { useGetInfiniteUsers } from './api/user-query'
+import { useGetAllTags } from './api/tag-query'
+import { useGetAllUsers } from './api/user-query'
 
 interface Option {
   value: string | number
@@ -25,9 +25,11 @@ export const OverviewFilter = () => {
 
   const model = selectedModel === 'total' ? undefined : selectedModel
   // get Authors, get Tags, Asignees, types
-  const asignees = useGetInfiniteUsers(model, { type: 'employee' })
-  const authors = useGetInfiniteUsers(model, { type: 'user' })
-  const tags = useGetInfiniteTags(model)
+  const asignees = useGetAllUsers(model, { type: 'employee' })
+  const authors = useGetAllUsers(model, { type: 'user' })
+  const tags = useGetAllTags(model)
+
+  console.log(asignees, tags)
 
   const options: Option[] = useMemo(() => {
     return [
@@ -35,34 +37,34 @@ export const OverviewFilter = () => {
         label: 'Asignees',
         value: 'asignees',
 
-        children: asignees.data?.pages.flatMap(page => {
-          return page.data.flatMap(data => ({
-            value: data.id,
-            label: data.username,
+        children: asignees.data?.items.map(item => {
+          return {
+            value: item.id,
+            label: item.username,
             isLeaf: true,
-          }))
+          }
         }),
       },
       {
         label: 'Authors',
         value: 'authors',
-        children: authors.data?.pages.flatMap(page => {
-          return page.data.flatMap(data => ({
-            value: data.id,
-            label: data.username,
+        children: authors.data?.items.map(item => {
+          return {
+            value: item.id,
+            label: item.username,
             isLeaf: true,
-          }))
+          }
         }),
       },
       {
         label: 'Tags',
         value: 'tags',
-        children: tags.data?.pages.flatMap(page => {
-          return page.data.flatMap(data => ({
-            value: data.id,
-            label: data.tagName,
+        children: tags.data?.items.map(item => {
+          return {
+            value: item.id,
+            label: item.tagName,
             isLeaf: true,
-          }))
+          }
         }),
       },
       {
@@ -84,7 +86,7 @@ export const OverviewFilter = () => {
         })),
       },
     ]
-  }, [asignees.data?.pages, authors.data?.pages, tags.data?.pages])
+  }, [asignees.data?.items, authors.data?.items, tags.data?.items])
 
   const onChange = (_value: (string | number)[][]) => {
     setFilter(
@@ -117,6 +119,7 @@ export const OverviewFilter = () => {
       options={options}
       showCheckedStrategy={Cascader.SHOW_CHILD}
       displayRender={labels => {
+        console.log(labels)
         return labels.join(' / ')
       }}
       dropdownRender={menu => {

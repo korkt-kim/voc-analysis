@@ -413,6 +413,11 @@ export const handlers = [
 
     const startDate = url.searchParams.get('startDate')
     const endDate = url.searchParams.get('endDate')
+    const tags = url.searchParams.get('tags')
+    const assignee = url.searchParams.get('assignee')
+    const author = url.searchParams.get('author')
+    const sentiment = url.searchParams.get('sentiment')
+    const search = url.searchParams.get('search')
 
     const filteredVocs = items
       .filter(item =>
@@ -420,6 +425,15 @@ export const handlers = [
       )
       .filter(item =>
         endDate ? dayjs(item.createdAt) <= dayjs(endDate) : true
+      )
+      .filter(item => (tags ? item.tags.some(tag => tag === tags) : true))
+      .filter(item => (assignee ? item.assignee === assignee : true))
+      .filter(item => (author ? item.author === author : true))
+      .filter(item => (sentiment ? item.sentiment === sentiment : true))
+      .filter(item =>
+        search
+          ? item.title.includes(search) || item.detail.includes(search)
+          : true
       )
 
     return HttpResponse.json({
@@ -443,6 +457,11 @@ export const handlers = [
 
       const startDate = url.searchParams.get('startDate')
       const endDate = url.searchParams.get('endDate')
+      const tags = url.searchParams.get('tags')
+      const assignee = url.searchParams.get('assignee')
+      const author = url.searchParams.get('author')
+      const sentiment = url.searchParams.get('sentiment')
+      const search = url.searchParams.get('search')
 
       const filteredVocs = items
         .filter(item => item.carModel === modelId)
@@ -451,6 +470,15 @@ export const handlers = [
         )
         .filter(item =>
           endDate ? dayjs(item.createdAt) <= dayjs(endDate) : true
+        )
+        .filter(item => (tags ? item.tags.some(tag => tag === tags) : true))
+        .filter(item => (assignee ? item.assignee === assignee : true))
+        .filter(item => (author ? item.author === author : true))
+        .filter(item => (sentiment ? item.sentiment === sentiment : true))
+        .filter(item =>
+          search
+            ? item.title.includes(search) || item.detail.includes(search)
+            : true
         )
 
       return HttpResponse.json({

@@ -21,42 +21,43 @@ export const handlers = [
       ? 1
       : Number(url.searchParams.get('page'))
 
-    const tags: Tag[] = (
-      [
-        {
-          id: 'tag-1',
-          tagName: '품질',
-          meaning: 'positive',
-          threshold: 50,
-        },
-        {
-          id: 'tag-2',
-          tagName: '배송 지연',
-          meaning: 'negative',
-          threshold: 90,
-        },
-        {
-          id: 'tag-3',
-          tagName: '친절한 서비스',
-          meaning: 'positive',
-          threshold: 100,
-        },
-        {
-          id: 'tag-4',
-          tagName: '가격 불만',
-          meaning: 'negative',
-          threshold: 100,
-        },
-        {
-          id: 'tag-5',
-          tagName: '기능 제안',
-          meaning: 'neutral',
-          threshold: 70,
-        },
-      ] as const
-    ).slice((page - 1) * limit, page * limit)
+    const tags: Tag[] = [
+      {
+        id: 'tag-1',
+        tagName: '품질',
+        meaning: 'positive',
+        threshold: 50,
+      },
+      {
+        id: 'tag-2',
+        tagName: '배송 지연',
+        meaning: 'negative',
+        threshold: 90,
+      },
+      {
+        id: 'tag-3',
+        tagName: '친절한 서비스',
+        meaning: 'positive',
+        threshold: 100,
+      },
+      {
+        id: 'tag-4',
+        tagName: '가격 불만',
+        meaning: 'negative',
+        threshold: 100,
+      },
+      {
+        id: 'tag-5',
+        tagName: '기능 제안',
+        meaning: 'neutral',
+        threshold: 70,
+      },
+    ] as const
 
-    return HttpResponse.json(tags)
+    return HttpResponse.json({
+      items: tags.slice((page - 1) * limit, page * limit),
+      total: tags.length,
+    })
   }),
 
   http.get(
@@ -72,24 +73,25 @@ export const handlers = [
         ? 1
         : Number(url.searchParams.get('page'))
 
-      const tags: Tag[] = (
-        [
-          {
-            id: 'tag-3',
-            tagName: '친절한 서비스',
-            meaning: 'positive',
-            threshold: 100,
-          },
-          {
-            id: 'tag-4',
-            tagName: '가격 불만',
-            meaning: 'negative',
-            threshold: 100,
-          },
-        ] as const
-      ).slice((page - 1) * limit, page * limit)
+      const tags: Tag[] = [
+        {
+          id: 'tag-3',
+          tagName: '친절한 서비스',
+          meaning: 'positive',
+          threshold: 100,
+        },
+        {
+          id: 'tag-4',
+          tagName: '가격 불만',
+          meaning: 'negative',
+          threshold: 100,
+        },
+      ] as const
 
-      return HttpResponse.json(tags)
+      return HttpResponse.json({
+        items: tags.slice((page - 1) * limit, page * limit),
+        total: tags.length,
+      })
     }
   ),
 ]

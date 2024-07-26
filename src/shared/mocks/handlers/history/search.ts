@@ -21,7 +21,7 @@ export const handlers = [
       },
       {
         id: 'c7b3d8e0-5e0b-4b0f-8b3a-3b9f4b3d3b5',
-        search: '승차감',
+        search: '에어컨',
         hits: 3,
       },
     ] satisfies HistoroyOfSearch[])
@@ -46,7 +46,7 @@ export const handlers = [
         },
         {
           id: 'c7b3d8e0-5e0b-4b0f-8b3a-3b9f4b3d3b2',
-          search: '부동액 교체주기',
+          search: '에어컨',
           hits: 3,
         },
       ] satisfies HistoroyOfSearch[])

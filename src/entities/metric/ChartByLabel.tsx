@@ -1,5 +1,6 @@
-import { Col, Flex, Row, Select, Table } from 'antd'
+import { Flex, Select, Table } from 'antd'
 import ReactECharts from 'echarts-for-react'
+import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 
 import {
@@ -12,7 +13,6 @@ import {
   useMetricStore,
   useOverviewStore,
 } from '@/shared'
-import { ChartValueFilter } from '@/shared/ui/ChartValueFilter'
 
 import { useGetAllVocs } from './api/voc-query'
 
@@ -22,7 +22,10 @@ const ChartSelectOptions = _ChartSelectOptions.filter(
 
 export const ChartByLabel = () => {
   const { selectedModel } = useMetricStore()
-  const { dateRange } = useOverviewStore()
+  const {
+    query: { searchText },
+  } = useRouter()
+  const { dateRange, filter } = useOverviewStore()
   const [timeUnit, setTimeUnit] = useState<'daily' | 'weekly' | 'monthly'>(
     'daily'
   )
@@ -31,7 +34,15 @@ export const ChartByLabel = () => {
 
   const { data: rawData } = useGetAllVocs(
     selectedModel === 'total' ? undefined : selectedModel,
-    { startDate: dateRange.start, endDate: dateRange.end }
+    {
+      startDate: dateRange.start,
+      endDate: dateRange.end,
+      tags: filter.find(item => item[0] === 'tags')?.[1],
+      assignee: filter.find(item => item[0] === 'asignees')?.[1],
+      author: filter.find(item => item[0] === 'authors')?.[1],
+      sentiment: filter.find(item => item[0] === '"sentiments"')?.[1],
+      search: searchText,
+    }
   )
 
   const data = useMemo(() => {

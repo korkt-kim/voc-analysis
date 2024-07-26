@@ -1,5 +1,4 @@
 import { Collapse, Typography } from 'antd'
-import { uniqueId } from 'lodash-es'
 
 export const SummarizeCollapse = () => {
   return (

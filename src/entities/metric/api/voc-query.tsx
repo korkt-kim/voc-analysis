@@ -55,7 +55,7 @@ export const useGetAllVocs = (
 ) => {
   return useQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: vocQueryKeys.getMany(model, query),
+    queryKey: vocQueryKeys.getAll(model, query),
     queryFn: () =>
       getAllContent({
         http: axios,
@@ -90,5 +90,7 @@ export const vocQueryKeys = {
     [...vocQueryKeys.all, 'getCount', model, query] as const,
   getMany: (model?: Model, query?: QueryParams) =>
     [...vocQueryKeys.all, 'getMany', model, query] as const,
+  getAll: (model?: Model, query?: QueryParams) =>
+    [...vocQueryKeys.all, 'getAll', model, query] as const,
   getOne: (id: string) => [...vocQueryKeys.all, 'getOne', id] as const,
 }
