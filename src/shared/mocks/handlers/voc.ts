@@ -1,5 +1,5 @@
 import { isNil } from 'lodash-es'
-import { http, HttpResponse } from 'msw'
+import { delay, http, HttpResponse } from 'msw'
 
 import { dayjs, Labels, Model, Sentiments, Status } from '@/shared'
 
@@ -488,9 +488,9 @@ export const handlers = [
     }
   ),
 
-  http.get('http://www.example.com/api/issue/:issueId', ({ params }) => {
+  http.get('http://www.example.com/api/issue/:issueId', async ({ params }) => {
     const { issueId } = params
-
+    await delay(400)
     const filteredVoc = items.find(item => item.id === issueId)
 
     return HttpResponse.json(filteredVoc)

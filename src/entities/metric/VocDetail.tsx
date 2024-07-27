@@ -1,6 +1,8 @@
 import { Divider, Skeleton } from 'antd'
 import dayjs from 'dayjs'
 
+import { SentimentTag } from '@/shared'
+
 import { useGetVoc } from './api/voc-query'
 
 export const VocDetail = ({ issueId }: { issueId: string }) => {
@@ -9,7 +11,7 @@ export const VocDetail = ({ issueId }: { issueId: string }) => {
   const content =
     isPending || !voc?.data ? (
       <>
-        <Skeleton />
+        <Skeleton active />
       </>
     ) : (
       <>
@@ -45,7 +47,7 @@ export const VocDetail = ({ issueId }: { issueId: string }) => {
               <Divider type='vertical' />
               진행상황: {voc.data.status}
               <Divider type='vertical' />
-              예상 감정: {voc.data.sentiment}
+              예상 감정: <SentimentTag sentiment={voc.data.sentiment} />
               <Divider type='vertical' />
               분류: {voc.data.label}
             </span>

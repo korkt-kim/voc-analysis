@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 
 import {
-  ChartCard,
   ChartSelectOptions as _ChartSelectOptions,
   DurationSelectOptions,
   groupDataBy,
@@ -83,7 +82,7 @@ export const ChartByLabel = () => {
   )
 
   return (
-    <ChartCard title='Number of Labels'>
+    <>
       <Flex justify='end'>
         <Select
           defaultValue={ChartSelectOptions[0].value}
@@ -104,7 +103,7 @@ export const ChartByLabel = () => {
       ) : (
         <ReactECharts option={getChartOptions()} notMerge lazyUpdate />
       )}
-    </ChartCard>
+    </>
   )
 }
 // {

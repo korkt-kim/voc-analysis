@@ -5,7 +5,12 @@ import { useMemo } from 'react'
 
 import { useGetAllTags } from '@/features/search/api/tag-query'
 import { useGetAllUsers } from '@/features/search/api/user-query'
-import { useMetricStore, useOverviewStore } from '@/shared'
+import {
+  Sentiments,
+  SentimentTag,
+  useMetricStore,
+  useOverviewStore,
+} from '@/shared'
 
 import { useGetAllVocs } from './api/voc-query'
 
@@ -63,7 +68,13 @@ export const IssueList = () => {
         { title: 'Status', dataIndex: 'status' },
         { title: 'Model', dataIndex: 'carModel' },
         { title: 'Label', dataIndex: 'label' },
-        { title: 'Sentiment', dataIndex: 'sentiment' },
+        {
+          title: 'Sentiment',
+          dataIndex: 'sentiment',
+          render: (sentiment: (typeof Sentiments)[number]) => {
+            return <SentimentTag sentiment={sentiment} />
+          },
+        },
         {
           title: 'Asignee',
           dataIndex: 'assignee',
@@ -81,7 +92,7 @@ export const IssueList = () => {
         },
       ],
     }
-  }, [data?.items, users?.items])
+  }, [data?.items, tags?.items, users?.items])
 
   return <Table {...tableProps} />
 }

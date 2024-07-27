@@ -1,4 +1,5 @@
 import { ArrowLeftOutlined } from '@ant-design/icons'
+import { Flex } from 'antd'
 import { NextPageWithLayout } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -29,10 +30,12 @@ export default function Page(): NextPageWithLayout {
       </Head>
       <main>
         <BasePageTemplate title='Overview - Voc Detail'>
-          <Link href={prevUrl}>
-            <ArrowLeftOutlined /> Go Back
-          </Link>
-          <VocDetail issueId={String(issueId)} />
+          <Flex vertical gap='middle'>
+            <Link href={prevUrl}>
+              <ArrowLeftOutlined /> Go Back
+            </Link>
+            <VocDetail issueId={String(issueId)} />
+          </Flex>
         </BasePageTemplate>
       </main>
     </>

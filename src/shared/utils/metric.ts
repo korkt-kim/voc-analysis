@@ -5,11 +5,21 @@ import { dayjs } from '../lib/dayjs'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const groupDataBy = <T extends { createdAt: string }>(
   data: T[],
-  unit: 'day' | 'week' | 'month',
+  categoryAttribute: keyof T | 'day' | 'week' | 'month',
   groupByAttribute?: keyof T
 ) => {
   const grouped = groupBy(data, item => {
-    return dayjs(item.createdAt).startOf(unit).format('YYYY-MM-DD')
+    if (
+      categoryAttribute === 'day' ||
+      categoryAttribute === 'week' ||
+      categoryAttribute === 'month'
+    ) {
+      return dayjs(item.createdAt)
+        .startOf(categoryAttribute)
+        .format('YYYY-MM-DD')
+    } else {
+      return item[categoryAttribute]
+    }
   })
 
   return Object.keys(grouped)

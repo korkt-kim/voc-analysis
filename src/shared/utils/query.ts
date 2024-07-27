@@ -59,15 +59,13 @@ export async function getAllContent<
   const result = {
     items: [],
   } as any as AxiosResponse<TResponse>['data']
-  console.log(list)
+
   for (const { data } of list) {
-    console.log('Data', data)
     assign(result, pickBy(data, isFunction))
 
     result.items.push(...data.items)
   }
-  console.log('result')
-  console.log(result)
+
   return result
 }
 

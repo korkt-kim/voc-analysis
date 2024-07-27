@@ -101,7 +101,7 @@ export const ChartByTag = () => {
   )
 
   return (
-    <ChartCard title='Number of Tags'>
+    <>
       <Flex justify='end'>
         <Select
           defaultValue={ChartSelectOptions[0].value}
@@ -122,7 +122,7 @@ export const ChartByTag = () => {
       ) : (
         <ReactECharts option={getChartOptions()} notMerge lazyUpdate />
       )}
-    </ChartCard>
+    </>
   )
 }
 // {/* <Col span={6}>

@@ -29,8 +29,6 @@ export const OverviewFilter = () => {
   const authors = useGetAllUsers(model, { type: 'user' })
   const tags = useGetAllTags(model)
 
-  console.log(asignees, tags)
-
   const options: Option[] = useMemo(() => {
     return [
       {
@@ -119,7 +117,6 @@ export const OverviewFilter = () => {
       options={options}
       showCheckedStrategy={Cascader.SHOW_CHILD}
       displayRender={labels => {
-        console.log(labels)
         return labels.join(' / ')
       }}
       dropdownRender={menu => {
