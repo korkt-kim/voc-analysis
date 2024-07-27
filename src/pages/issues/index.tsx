@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
 import { IssueList } from '@/entities'
-import { SummarizeCollapse } from '@/entities/metric/SummarizeCollapse'
+import { SummarizeCollapse } from '@/features'
 import { useOverviewStore } from '@/shared'
 import { BaseLayout } from '@/widgets'
 import { OverviewTemplate } from '@/widgets/templates/OverviewTemplate'
@@ -42,7 +42,11 @@ export default function Page(): NextPageWithLayout {
             </Button>
           </Flex>
           {show && <SummarizeCollapse />}
-          <IssueList />
+          <IssueList
+            dateRange={dateRange}
+            filter={filter}
+            searchText={searchText}
+          />
         </Flex>
       </OverviewTemplate>
     </>

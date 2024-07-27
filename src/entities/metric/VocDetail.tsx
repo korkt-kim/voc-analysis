@@ -1,12 +1,14 @@
 import { Divider, Skeleton } from 'antd'
 import dayjs from 'dayjs'
 
+import { useGetAllUsers } from '@/features/search/api/user-query'
 import { SentimentTag } from '@/shared'
 
 import { useGetVoc } from './api/voc-query'
 
 export const VocDetail = ({ issueId }: { issueId: string }) => {
   const { data: voc, isPending } = useGetVoc(issueId)
+  const { data: users } = useGetAllUsers()
 
   const content =
     isPending || !voc?.data ? (
@@ -41,9 +43,14 @@ export const VocDetail = ({ issueId }: { issueId: string }) => {
               fontSize: '0.875rem',
             }}>
             <span>
-              생성자: {voc.data.author}
+              생성자:{' '}
+              {users?.items.find(user => user.id === voc.data.author)?.username}
               <Divider type='vertical' />
-              담당자: {voc.data.assignee}
+              담당자:{' '}
+              {
+                users?.items.find(user => user.id === voc.data.assignee)
+                  ?.username
+              }
               <Divider type='vertical' />
               진행상황: {voc.data.status}
               <Divider type='vertical' />

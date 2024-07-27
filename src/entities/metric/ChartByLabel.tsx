@@ -1,6 +1,5 @@
 import { Flex, Select, Table } from 'antd'
 import ReactECharts from 'echarts-for-react'
-import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 
 import {
@@ -10,7 +9,6 @@ import {
   useChartValueFilterOption,
   useGetChartOption,
   useMetricStore,
-  useOverviewStore,
 } from '@/shared'
 
 import { useGetAllVocs } from './api/voc-query'
@@ -19,12 +17,22 @@ const ChartSelectOptions = _ChartSelectOptions.filter(
   option => option.value !== 'pie'
 )
 
-export const ChartByLabel = () => {
+export interface ChartByLabelProps {
+  dateRange?: {
+    start: string
+    end: string
+  }
+  filter?: (string | number)[][]
+  searchText?: string | string[] | undefined
+}
+
+export const ChartByLabel = ({
+  filter,
+  dateRange,
+  searchText,
+}: ChartByLabelProps) => {
   const { selectedModel } = useMetricStore()
-  const {
-    query: { searchText },
-  } = useRouter()
-  const { dateRange, filter } = useOverviewStore()
+
   const [timeUnit, setTimeUnit] = useState<'daily' | 'weekly' | 'monthly'>(
     'daily'
   )
@@ -34,12 +42,12 @@ export const ChartByLabel = () => {
   const { data: rawData } = useGetAllVocs(
     selectedModel === 'total' ? undefined : selectedModel,
     {
-      startDate: dateRange.start,
-      endDate: dateRange.end,
-      tags: filter.find(item => item[0] === 'tags')?.[1],
-      assignee: filter.find(item => item[0] === 'asignees')?.[1],
-      author: filter.find(item => item[0] === 'authors')?.[1],
-      sentiment: filter.find(item => item[0] === '"sentiments"')?.[1],
+      startDate: dateRange?.start,
+      endDate: dateRange?.end,
+      tags: filter?.find(item => item[0] === 'tags')?.[1],
+      assignee: filter?.find(item => item[0] === 'asignees')?.[1],
+      author: filter?.find(item => item[0] === 'authors')?.[1],
+      sentiment: filter?.find(item => item[0] === '"sentiments"')?.[1],
       search: searchText,
     }
   )

@@ -5,30 +5,36 @@ import { useMemo } from 'react'
 
 import { useGetAllTags } from '@/features/search/api/tag-query'
 import { useGetAllUsers } from '@/features/search/api/user-query'
-import {
-  Sentiments,
-  SentimentTag,
-  useMetricStore,
-  useOverviewStore,
-} from '@/shared'
+import { Sentiments, SentimentTag, useMetricStore } from '@/shared'
 
 import { useGetAllVocs } from './api/voc-query'
 
-export const IssueList = () => {
+export interface IssueListProps {
+  dateRange?: {
+    start: string
+    end: string
+  }
+  filter?: (string | number)[][]
+  searchText?: string | string[] | undefined
+}
+
+export const IssueList = ({
+  dateRange,
+  filter,
+  searchText,
+}: IssueListProps) => {
   const { selectedModel } = useMetricStore()
-  const {
-    query: { searchText },
-  } = useRouter()
-  const { dateRange, filter } = useOverviewStore()
+  const { asPath } = useRouter()
+
   const { data } = useGetAllVocs(
     selectedModel === 'total' ? undefined : selectedModel,
     {
-      startDate: dateRange.start,
-      endDate: dateRange.end,
-      tags: filter.find(item => item[0] === 'tags')?.[1],
-      assignee: filter.find(item => item[0] === 'asignees')?.[1],
-      author: filter.find(item => item[0] === 'authors')?.[1],
-      sentiment: filter.find(item => item[0] === '"sentiments"')?.[1],
+      startDate: dateRange?.start,
+      endDate: dateRange?.end,
+      tags: filter?.find(item => item[0] === 'tags')?.[1],
+      assignee: filter?.find(item => item[0] === 'asignees')?.[1],
+      author: filter?.find(item => item[0] === 'authors')?.[1],
+      sentiment: filter?.find(item => item[0] === '"sentiments"')?.[1],
       search: searchText,
     }
   )
@@ -49,7 +55,7 @@ export const IssueList = () => {
               <Link
                 href={{
                   pathname: '/issues/[issueId]',
-                  query: { issueId: record.id, from: '/issues' },
+                  query: { issueId: record.id, from: asPath },
                 }}>
                 {title}
               </Link>
@@ -92,7 +98,7 @@ export const IssueList = () => {
         },
       ],
     }
-  }, [data?.items, tags?.items, users?.items])
+  }, [data?.items, asPath, tags?.items, users?.items])
 
   return <Table {...tableProps} />
 }

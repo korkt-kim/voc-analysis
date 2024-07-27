@@ -1,7 +1,11 @@
 import { Col, Flex, Form, Row, theme } from 'antd'
 
 import { TopRankedSearchInputs } from '@/entities/search/TopRankedSearchInputs'
-import { OverviewDateRange, OverviewFilter, SearchInput } from '@/features'
+import {
+  OverviewDateRange,
+  OverviewFilter,
+  OverviewSearchInput,
+} from '@/features'
 
 export const OverviewFilterSection = () => {
   const { token } = theme.useToken()
@@ -12,7 +16,7 @@ export const OverviewFilterSection = () => {
         <Row justify='center'>
           <Col flex='500px'>
             <Form.Item label='Search'>
-              <SearchInput />
+              <OverviewSearchInput />
               <TopRankedSearchInputs n={3} />
             </Form.Item>
           </Col>

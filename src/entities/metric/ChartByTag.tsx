@@ -1,20 +1,16 @@
 import { Flex, Select, Table } from 'antd'
 import ReactECharts from 'echarts-for-react'
 import { omit } from 'lodash-es'
-import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 
 import { useGetAllTags } from '@/features/search/api/tag-query'
-import { useGetAllUsers } from '@/features/search/api/user-query'
 import {
-  ChartCard,
   ChartSelectOptions as _ChartSelectOptions,
   DurationSelectOptions,
   groupDataBy,
   useChartValueFilterOption,
   useGetChartOption,
   useMetricStore,
-  useOverviewStore,
 } from '@/shared'
 
 import { useGetAllVocs } from './api/voc-query'
@@ -23,12 +19,22 @@ const ChartSelectOptions = _ChartSelectOptions.filter(
   option => option.value !== 'pie'
 )
 
-export const ChartByTag = () => {
+export interface ChartByTagProps {
+  dateRange?: {
+    start: string
+    end: string
+  }
+  filter?: (string | number)[][]
+  searchText?: string | string[] | undefined
+}
+
+export const ChartByTag = ({
+  dateRange,
+  filter,
+  searchText,
+}: ChartByTagProps) => {
   const { selectedModel } = useMetricStore()
-  const { dateRange, filter } = useOverviewStore()
-  const {
-    query: { searchText },
-  } = useRouter()
+
   const [timeUnit, setTimeUnit] = useState<'daily' | 'weekly' | 'monthly'>(
     'daily'
   )
@@ -38,12 +44,12 @@ export const ChartByTag = () => {
   const { data: rawData } = useGetAllVocs(
     selectedModel === 'total' ? undefined : selectedModel,
     {
-      startDate: dateRange.start,
-      endDate: dateRange.end,
-      tags: filter.find(item => item[0] === 'tags')?.[1],
-      assignee: filter.find(item => item[0] === 'asignees')?.[1],
-      author: filter.find(item => item[0] === 'authors')?.[1],
-      sentiment: filter.find(item => item[0] === '"sentiments"')?.[1],
+      startDate: dateRange?.start,
+      endDate: dateRange?.end,
+      tags: filter?.find(item => item[0] === 'tags')?.[1],
+      assignee: filter?.find(item => item[0] === 'asignees')?.[1],
+      author: filter?.find(item => item[0] === 'authors')?.[1],
+      sentiment: filter?.find(item => item[0] === '"sentiments"')?.[1],
       search: searchText,
     }
   )
@@ -125,8 +131,3 @@ export const ChartByTag = () => {
     </>
   )
 }
-// {/* <Col span={6}>
-//       <ChartCard title='Tag Filter'>
-//         <ChartValueFilter {...chartValueFilterOption} />
-//       </ChartCard>
-//     </Col> */}

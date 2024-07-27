@@ -1,5 +1,7 @@
 export { ModelSelect } from './Car/ModelSelect'
 export { OverviewRouteTab } from './overview/OverviewRouteTab'
+export { SummarizeCollapse } from './overview/SummarizeCollapse'
+export { InsightSearchInput } from './search/InsightSearchInput'
 export { OverviewDateRange } from './search/OverviewDateRange'
 export { OverviewFilter } from './search/OverviewFilter'
-export { SearchInput } from './search/SearchInput'
+export { OverviewSearchInput } from './search/OverviewSearchInput'

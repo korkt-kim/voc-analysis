@@ -1,6 +1,7 @@
 import { Select } from 'antd'
+import { useCallback } from 'react'
 
-import { useMetricStore } from '@/shared'
+import { useInsightStore, useMetricStore } from '@/shared'
 
 import { Models } from '../../shared/consts'
 import { Model } from '../../shared/types'
@@ -11,12 +12,21 @@ export const ModelSelect = () => {
     action: { setSelectedModel },
   } = useMetricStore()
 
-  const onSearch = (search: Model | 'total') => {
-    setSelectedModel(search)
-  }
+  const {
+    action: { setShowInsight },
+  } = useInsightStore()
+
+  const onChange = useCallback(
+    (search: Model | 'total') => {
+      setSelectedModel(search)
+      setShowInsight(undefined)
+    },
+    [setSelectedModel, setShowInsight]
+  )
 
   return (
     <Select
+      style={{ width: '100%' }}
       value={selectedModel}
       showSearch
       options={
@@ -25,7 +35,7 @@ export const ModelSelect = () => {
           ...Models.map(model => ({ value: model, label: model })),
         ] as const
       }
-      onChange={value => onSearch(value)}
+      onChange={onChange}
     />
   )
 }

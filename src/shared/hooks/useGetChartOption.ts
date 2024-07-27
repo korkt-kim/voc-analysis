@@ -111,7 +111,7 @@ export const useGetChartOption = (
               },
               legend: { show: true },
               type: 'pie',
-              data: data.map((item, index) => ({
+              data: data.map(item => ({
                 value: item.value[0].value,
                 name: item.category,
                 itemStyle: { color: color?.[item.category] },

@@ -1,34 +1,35 @@
 import ReactECharts from 'echarts-for-react'
-import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 
-import {
-  ChartCard,
-  groupDataBy,
-  useGetChartOption,
-  useMetricStore,
-  useOverviewStore,
-  VOC,
-} from '@/shared'
+import { groupDataBy, useGetChartOption, useMetricStore, VOC } from '@/shared'
 
 import { useGetAllVocs } from './api/voc-query'
 
-export const SentimentSemiPieChart = () => {
+export interface SentimentSemiPieChartProps {
+  dateRange?: {
+    start: string
+    end: string
+  }
+  filter?: (string | number)[][]
+  searchText?: string | string[] | undefined
+}
+
+export const SentimentSemiPieChart = ({
+  dateRange,
+  filter,
+  searchText,
+}: SentimentSemiPieChartProps) => {
   const { selectedModel } = useMetricStore()
-  const { dateRange, filter } = useOverviewStore()
-  const {
-    query: { searchText },
-  } = useRouter()
 
   const { data: rawData } = useGetAllVocs(
     selectedModel === 'total' ? undefined : selectedModel,
     {
-      startDate: dateRange.start,
-      endDate: dateRange.end,
-      tags: filter.find(item => item[0] === 'tags')?.[1],
-      assignee: filter.find(item => item[0] === 'asignees')?.[1],
-      author: filter.find(item => item[0] === 'authors')?.[1],
-      sentiment: filter.find(item => item[0] === '"sentiments"')?.[1],
+      startDate: dateRange?.start,
+      endDate: dateRange?.end,
+      tags: filter?.find(item => item[0] === 'tags')?.[1],
+      assignee: filter?.find(item => item[0] === 'asignees')?.[1],
+      author: filter?.find(item => item[0] === 'authors')?.[1],
+      sentiment: filter?.find(item => item[0] === '"sentiments"')?.[1],
       search: searchText,
     }
   )

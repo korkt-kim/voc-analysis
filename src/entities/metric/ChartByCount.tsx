@@ -1,27 +1,34 @@
 import { Flex, Select, Table } from 'antd'
 import ReactECharts from 'echarts-for-react'
-import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 
 import {
-  ChartCard,
   ChartSelectOptions,
   DurationSelectOptions,
   groupDataBy,
   useGetChartOption,
   useMetricStore,
-  useOverviewStore,
   VOC,
 } from '@/shared'
 
 import { useGetAllVocs } from './api/voc-query'
 
-export const ChartByCount = () => {
+export interface ChartByCountProps {
+  dateRange?: {
+    start: string
+    end: string
+  }
+  filter?: (string | number)[][]
+  searchText?: string | string[] | undefined
+}
+
+export const ChartByCount = ({
+  dateRange,
+  filter,
+  searchText,
+}: ChartByCountProps) => {
   const { selectedModel } = useMetricStore()
-  const {
-    query: { searchText },
-  } = useRouter()
-  const { dateRange, filter } = useOverviewStore()
+
   const [timeUnit, setTimeUnit] = useState<'daily' | 'weekly' | 'monthly'>(
     'daily'
   )
@@ -32,12 +39,12 @@ export const ChartByCount = () => {
   const { data: rawData } = useGetAllVocs(
     selectedModel === 'total' ? undefined : selectedModel,
     {
-      startDate: dateRange.start,
-      endDate: dateRange.end,
-      tags: filter.find(item => item[0] === 'tags')?.[1],
-      assignee: filter.find(item => item[0] === 'asignees')?.[1],
-      author: filter.find(item => item[0] === 'authors')?.[1],
-      sentiment: filter.find(item => item[0] === '"sentiments"')?.[1],
+      startDate: dateRange?.start,
+      endDate: dateRange?.end,
+      tags: filter?.find(item => item[0] === 'tags')?.[1],
+      assignee: filter?.find(item => item[0] === 'asignees')?.[1],
+      author: filter?.find(item => item[0] === 'authors')?.[1],
+      sentiment: filter?.find(item => item[0] === '"sentiments"')?.[1],
       search: searchText,
     }
   )
@@ -61,7 +68,7 @@ export const ChartByCount = () => {
   const getOptions = useGetChartOption(chartType, data)
 
   return (
-    <ChartCard title='Number of Total Issues' style={{ height: 500 }}>
+    <>
       <Flex justify='end'>
         <Select
           defaultValue={ChartSelectOptions[0].value}
@@ -87,6 +94,6 @@ export const ChartByCount = () => {
           style={{ height: 400 }}
         />
       )}
-    </ChartCard>
+    </>
   )
 }

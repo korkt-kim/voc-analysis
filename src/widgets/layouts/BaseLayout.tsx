@@ -19,6 +19,12 @@ export const BaseLayout = (page: JSX.Element) => {
   } = theme.useToken()
   const selectedKeys = useMemo(() => {
     if (
+      router.pathname.startsWith('/issues') &&
+      String(router.query.from).startsWith('/insight')
+    ) {
+      return ['/insight']
+    }
+    if (
       router.pathname.startsWith('/analysis') ||
       router.pathname.startsWith('/issues')
     ) {
@@ -26,12 +32,14 @@ export const BaseLayout = (page: JSX.Element) => {
     }
 
     return [router.pathname]
-  }, [router.pathname])
+  }, [router.pathname, router.query])
 
   return (
     <Layout style={{ minWidth: 1200, minHeight: '100dvh' }}>
       <Layout.Sider width={200} style={{ background: colorBgContainer }}>
-        <ModelSelect />
+        <div style={{ padding: 10 }}>
+          <ModelSelect />
+        </div>
         <Menu
           selectedKeys={selectedKeys}
           style={{ borderRight: 0 }}
