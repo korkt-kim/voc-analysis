@@ -15,7 +15,7 @@ const SummaryText = `
 `
 
 export const handlers = [
-  http.get('http://www.example.com/api/history/summary', () => {
+  http.get('/api/history/summary', () => {
     const stream = new ReadableStream({
       start(controller) {
         SummaryText.split('').forEach((_, index, origin) => {
@@ -46,7 +46,7 @@ export const handlers = [
     })
   }),
 
-  http.get('http://www.example.com/api/:modelId/history/summary', () => {
+  http.get('/api/:modelId/history/summary', () => {
     const stream = new ReadableStream({
       start(controller) {
         SummaryText.split('').forEach((_, index, origin) => {

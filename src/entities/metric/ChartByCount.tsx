@@ -49,6 +49,8 @@ export const ChartByCount = ({
     }
   )
 
+  console.log(rawData)
+
   const data = useMemo(() => {
     if (!rawData) {
       return []

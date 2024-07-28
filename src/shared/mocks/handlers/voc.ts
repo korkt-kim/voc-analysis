@@ -401,7 +401,7 @@ const items: VOC[] = [
 ]
 
 export const handlers = [
-  http.get('http://www.example.com/api/issues', ({ request }) => {
+  http.get('/api/issues', ({ request }) => {
     const url = new URL(request.url)
 
     const limit = isNil(url.searchParams.get('limit'))
@@ -442,53 +442,50 @@ export const handlers = [
     })
   }),
 
-  http.get(
-    'http://www.example.com/api/:modelId/issues',
-    ({ request, params }) => {
-      const url = new URL(request.url)
-      const { modelId } = params
+  http.get('/api/:modelId/issues', ({ request, params }) => {
+    const url = new URL(request.url)
+    const { modelId } = params
 
-      const limit = isNil(url.searchParams.get('limit'))
-        ? 10
-        : Number(url.searchParams.get('limit'))
-      const page = isNil(url.searchParams.get('page'))
-        ? 1
-        : Number(url.searchParams.get('page'))
+    const limit = isNil(url.searchParams.get('limit'))
+      ? 10
+      : Number(url.searchParams.get('limit'))
+    const page = isNil(url.searchParams.get('page'))
+      ? 1
+      : Number(url.searchParams.get('page'))
 
-      const startDate = url.searchParams.get('startDate')
-      const endDate = url.searchParams.get('endDate')
-      const tags = url.searchParams.get('tags')
-      const assignee = url.searchParams.get('assignee')
-      const author = url.searchParams.get('author')
-      const sentiment = url.searchParams.get('sentiment')
-      const search = url.searchParams.get('search')
+    const startDate = url.searchParams.get('startDate')
+    const endDate = url.searchParams.get('endDate')
+    const tags = url.searchParams.get('tags')
+    const assignee = url.searchParams.get('assignee')
+    const author = url.searchParams.get('author')
+    const sentiment = url.searchParams.get('sentiment')
+    const search = url.searchParams.get('search')
 
-      const filteredVocs = items
-        .filter(item => item.carModel === modelId)
-        .filter(item =>
-          startDate ? dayjs(item.createdAt) >= dayjs(startDate) : true
-        )
-        .filter(item =>
-          endDate ? dayjs(item.createdAt) <= dayjs(endDate) : true
-        )
-        .filter(item => (tags ? item.tags.some(tag => tag === tags) : true))
-        .filter(item => (assignee ? item.assignee === assignee : true))
-        .filter(item => (author ? item.author === author : true))
-        .filter(item => (sentiment ? item.sentiment === sentiment : true))
-        .filter(item =>
-          search
-            ? item.title.includes(search) || item.detail.includes(search)
-            : true
-        )
+    const filteredVocs = items
+      .filter(item => item.carModel === modelId)
+      .filter(item =>
+        startDate ? dayjs(item.createdAt) >= dayjs(startDate) : true
+      )
+      .filter(item =>
+        endDate ? dayjs(item.createdAt) <= dayjs(endDate) : true
+      )
+      .filter(item => (tags ? item.tags.some(tag => tag === tags) : true))
+      .filter(item => (assignee ? item.assignee === assignee : true))
+      .filter(item => (author ? item.author === author : true))
+      .filter(item => (sentiment ? item.sentiment === sentiment : true))
+      .filter(item =>
+        search
+          ? item.title.includes(search) || item.detail.includes(search)
+          : true
+      )
 
-      return HttpResponse.json({
-        items: filteredVocs.slice((page - 1) * limit, page * limit),
-        total: filteredVocs.length,
-      })
-    }
-  ),
+    return HttpResponse.json({
+      items: filteredVocs.slice((page - 1) * limit, page * limit),
+      total: filteredVocs.length,
+    })
+  }),
 
-  http.get('http://www.example.com/api/issue/:issueId', async ({ params }) => {
+  http.get('/api/issue/:issueId', async ({ params }) => {
     const { issueId } = params
     await delay(400)
     const filteredVoc = items.find(item => item.id === issueId)

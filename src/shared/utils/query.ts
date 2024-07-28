@@ -27,6 +27,7 @@ export async function getAllContent<
     let res: AxiosResponse<TResponse, any> | null = null
 
     if (nextUrl) {
+      console.log(nextUrl)
       res = await http.get<TResponse>(nextUrl.replace(/^\/api/, ''))
     } else {
       if (typeof queryResult === 'function') {
@@ -41,9 +42,9 @@ export async function getAllContent<
     }
 
     list.push(res)
-
+    console.log(location.origin)
     if (res.config.url) {
-      const url = new URL(res.config.url, res.config.baseURL)
+      const url = new URL(res.config.url, location.origin)
 
       url.searchParams.set(
         'page',
@@ -53,6 +54,8 @@ export async function getAllContent<
       )
 
       nextUrl = url.toString()
+
+      console.log(url, nextUrl)
     }
   }
 

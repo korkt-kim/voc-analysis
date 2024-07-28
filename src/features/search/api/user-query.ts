@@ -13,7 +13,7 @@ export const useGetInfiniteUsers = (
     queryKey: userQueryKeys.getMany(model, query),
     queryFn: ({ pageParam }) =>
       axios.request<User[]>({
-        url: model ? `/${model}/users` : '/users',
+        url: model ? `/api/${model}/users` : '/api/users',
         method: 'get',
         params: { ...query, ...pageParam },
         ...config,
@@ -43,7 +43,7 @@ export const useGetAllUsers = (
         http: axios,
         maxTries: 1,
         queryResult: axios.request<{ items: User[] }>({
-          url: model ? `/${model}/users` : '/users',
+          url: model ? `/api/${model}/users` : '/api/users',
           method: 'get',
           params: { ...query, limit: 100 },
           ...config,

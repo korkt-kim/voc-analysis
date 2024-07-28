@@ -372,7 +372,7 @@ const users: User[] = [
 ] as const
 
 export const handlers = [
-  http.get('http://www.example.com/api/users', ({ request }) => {
+  http.get('/api/users', ({ request }) => {
     const url = new URL(request.url)
 
     const type = url.searchParams.get('type')
@@ -393,28 +393,25 @@ export const handlers = [
     })
   }),
 
-  http.get(
-    'http://www.example.com/api/:modelId/users',
-    ({ request, params }) => {
-      const url = new URL(request.url)
-      const { modelId } = params
+  http.get('/api/:modelId/users', ({ request, params }) => {
+    const url = new URL(request.url)
+    const { modelId } = params
 
-      const type = url.searchParams.get('type')
-      const limit = isNil(url.searchParams.get('limit'))
-        ? 10
-        : Number(url.searchParams.get('limit'))
-      const page = isNil(url.searchParams.get('page'))
-        ? 1
-        : Number(url.searchParams.get('page'))
+    const type = url.searchParams.get('type')
+    const limit = isNil(url.searchParams.get('limit'))
+      ? 10
+      : Number(url.searchParams.get('limit'))
+    const page = isNil(url.searchParams.get('page'))
+      ? 1
+      : Number(url.searchParams.get('page'))
 
-      const filteredUsers: User[] = users.filter(user =>
-        type ? user.type === type : true
-      )
+    const filteredUsers: User[] = users.filter(user =>
+      type ? user.type === type : true
+    )
 
-      return HttpResponse.json({
-        items: filteredUsers.slice((page - 1) * limit, page * limit),
-        total: filteredUsers.length,
-      })
-    }
-  ),
+    return HttpResponse.json({
+      items: filteredUsers.slice((page - 1) * limit, page * limit),
+      total: filteredUsers.length,
+    })
+  }),
 ]

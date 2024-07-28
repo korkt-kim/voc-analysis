@@ -13,7 +13,7 @@ export const useGetTotalVocCount = (
     queryKey: vocQueryKeys.getCount(model, query),
     queryFn: () =>
       axios.request<{ items: VOC[]; total: number }>({
-        url: model ? `/${model}/issues` : '/issues',
+        url: model ? `/api/${model}/issues` : '/api/issues',
         method: 'get',
         params: query,
         ...config,
@@ -31,7 +31,7 @@ export const useGetInfiniteVocs = (
     queryKey: vocQueryKeys.getMany(model, query),
     queryFn: () =>
       axios.request<{ items: VOC[]; total: number }>({
-        url: model ? `/${model}/issues` : '/issues',
+        url: model ? `/api/${model}/issues` : '/api/issues',
         method: 'get',
         params: query,
         ...config,
@@ -61,7 +61,7 @@ export const useGetAllVocs = (
         http: axios,
         maxTries: 1,
         queryResult: axios.request<{ items: VOC[]; total: number }>({
-          url: model ? `/${model}/issues` : '/issues',
+          url: model ? `/api/${model}/issues` : '/api/issues',
           method: 'get',
           params: { ...query, limit: 100 },
           ...config,
@@ -76,7 +76,7 @@ export const useGetVoc = (id: string, config?: AxiosRequestConfig) => {
     queryKey: vocQueryKeys.getOne(id),
     queryFn: () =>
       axios.request<VOC>({
-        url: `/issue/${id}`,
+        url: `/api/issue/${id}`,
         method: 'get',
 
         ...config,

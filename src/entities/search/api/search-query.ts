@@ -13,7 +13,7 @@ export const useGetSearchHistory = (
     queryKey: searchQueryKeys.getMany(model, query),
     queryFn: () =>
       axios.request<HistoroyOfSearch[]>({
-        url: model ? `/${model}/history/search` : '/history/search',
+        url: model ? `/api/${model}/history/search` : '/api/history/search',
         method: 'get',
         params: query,
         ...config,

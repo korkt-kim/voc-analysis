@@ -14,7 +14,7 @@ export const useGetInfiniteTags = (
     queryKey: tagQueryKeys.getMany(model, query),
     queryFn: ({ pageParam }) =>
       axios.request<Tag[]>({
-        url: model ? `/${model}/tags` : '/tags',
+        url: model ? `/api/${model}/tags` : '/api/tags',
         method: 'get',
         params: { ...query, ...pageParam },
         ...config,
@@ -44,7 +44,7 @@ export const useGetAllTags = (
         http: axios,
         maxTries: 1,
         queryResult: axios.request<{ items: Tag[] }>({
-          url: model ? `/${model}/tags` : '/tags',
+          url: model ? `/api/${model}/tags` : '/api/tags',
           method: 'get',
           params: { ...query, limit: 100 },
           ...config,

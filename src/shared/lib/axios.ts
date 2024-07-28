@@ -1,7 +1,5 @@
 import axios from 'axios'
 
-const instance = axios.create({
-  baseURL: 'http://www.example.com/api',
-})
+const instance = axios.create({})
 
 export { instance as axios }
