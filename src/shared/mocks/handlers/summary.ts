@@ -15,7 +15,7 @@ const SummaryText = `
 `
 
 export const handlers = [
-  http.get('/api/history/summary', () => {
+  http.get('http://www.example.com/api/history/summary', () => {
     const stream = new ReadableStream({
       start(controller) {
         SummaryText.split('').forEach((_, index, origin) => {
@@ -46,16 +46,10 @@ export const handlers = [
     })
   }),
 
-  http.get('/api/:modelId/history/summary', () => {
+  http.get('http://www.example.com/api/:modelId/history/summary', () => {
     const stream = new ReadableStream({
       start(controller) {
         SummaryText.split('').forEach((_, index, origin) => {
-          // const func = (asdf:string) => new Promise((resolve,reject)=> setTimeout(() => {
-          //     acc
-          //     resolve(asdf)
-          // },200))
-
-          // await func(acc)
           setTimeout(() => {
             controller.enqueue(
               encoder.encode(

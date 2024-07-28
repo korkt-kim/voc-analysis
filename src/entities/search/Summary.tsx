@@ -10,7 +10,9 @@ export const Summary = () => {
   const model = selectedModel === 'total' ? undefined : selectedModel
   useEffect(() => {
     const eventSource = new EventSource(
-      model ? `/api/${model}/history/summary` : '/api/history/summary'
+      model
+        ? `http://www.example.com/api/${model}/history/summary`
+        : 'http://www.example.com/api/history/summary'
     )
 
     eventSource.onmessage = event => {
